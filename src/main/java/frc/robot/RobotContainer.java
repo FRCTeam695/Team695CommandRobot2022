@@ -74,7 +74,6 @@ public class RobotContainer {
   private final LimelightSubsystem m_LimelightSubsystem = new LimelightSubsystem(RobotMainNetworkTableInstance, 0);
 
   private final DriveCommand m_F310_ArcadeDrive = new DriveCommand(m_drivetrain, m_LStickYAxis, m_RStickXAxis);
-  private final AimDrivetrain m_AimDrivetrain = new AimDrivetrain(m_LimelightSubsystem);
   private NetworkTable LimeLight;
 
 
