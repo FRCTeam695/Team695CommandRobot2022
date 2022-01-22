@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.Limelight;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
@@ -71,7 +71,7 @@ public class RobotContainer {
   private final DoubleSupplier m_RStickXAxis = () -> (m_Logitech_F310.getRawAxis(4));
   private final NetworkTableInstance RobotMainNetworkTableInstance = NetworkTableInstance.getDefault();
   private final DriveSubsystem m_drivetrain = new DriveSubsystem();
-  private final LimelightSubsystem m_LimelightSubsystem = new LimelightSubsystem(RobotMainNetworkTableInstance, 0);
+  private final Limelight m_LimelightSubsystem = new Limelight(RobotMainNetworkTableInstance, 0);
 
   private final DriveCommand m_F310_ArcadeDrive = new DriveCommand(m_drivetrain, m_LStickYAxis, m_RStickXAxis);
   private NetworkTable LimeLight;
