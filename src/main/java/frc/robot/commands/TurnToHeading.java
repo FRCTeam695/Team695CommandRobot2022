@@ -13,16 +13,16 @@ import frc.robot.Constants.*;
 
 public class TurnToHeading extends CommandBase {
   private final DoubleSupplier m_desiredHeading;
-  private final DriveSubsystem m_subsystem;
+  private final DriveSubsystem m_drivetrain;
   private final double kP = 0.015;
   
   /** Creates a new TurnToHeading. */
-  public TurnToHeading(DriveSubsystem subsystem, DoubleSupplier desiredHeading) {
+  public TurnToHeading(DriveSubsystem drivetrain, DoubleSupplier desiredHeading) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_subsystem = subsystem;
+    m_drivetrain = drivetrain;
     m_desiredHeading = desiredHeading;
 
-    addRequirements(subsystem);
+    addRequirements(drivetrain);
   }
 
   // Called when the command is initially scheduled.
@@ -32,9 +32,9 @@ public class TurnToHeading extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double error = m_desiredHeading.getAsDouble() - m_subsystem.getHeading();
+    double error = m_desiredHeading.getAsDouble() - m_drivetrain.getHeading();
     
-    m_subsystem.tankDriveVolts(
+    m_drivetrain.tankDriveVolts(
       -kP * DriveConstants.kMaxDrivetrainVolts * error,
       kP * DriveConstants.kMaxDrivetrainVolts * error);
   }

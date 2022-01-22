@@ -71,32 +71,32 @@ public class RobotContainer {
   private final DoubleSupplier m_LStickXAxis = () -> (m_Logitech_F310.getX());
   private final DoubleSupplier m_RStickXAxis = () -> (m_Logitech_F310.getRawAxis(4));
   private final NetworkTableInstance RobotMainNetworkTableInstance = NetworkTableInstance.getDefault();
-  private final DriveSubsystem m_DriveSubsystem = new DriveSubsystem();
+  private final DriveSubsystem m_drivetrain = new DriveSubsystem();
   private final LimelightSubsystem m_LimelightSubsystem = new LimelightSubsystem(RobotMainNetworkTableInstance, 0);
 
-  private final DriveCommand m_F310_ArcadeDrive = new DriveCommand(m_DriveSubsystem, m_LStickYAxis, m_RStickXAxis);
+  private final DriveCommand m_F310_ArcadeDrive = new DriveCommand(m_drivetrain, m_LStickYAxis, m_RStickXAxis);
   private final AimDrivetrain m_AimDrivetrain = new AimDrivetrain(m_LimelightSubsystem);
   private NetworkTable LimeLight;
 
 
   private final Command tankDriveSame = new RunCommand(
-      () -> {m_DriveSubsystem.tankDriveVolts(
+      () -> {m_drivetrain.tankDriveVolts(
                 DriveConstants.kMaxDrivetrainVolts * m_LStickYAxis.getAsDouble(),
                 DriveConstants.kMaxDrivetrainVolts * m_LStickYAxis.getAsDouble());},
-      m_DriveSubsystem);
+      m_drivetrain);
 
   private final Command turnDrive = new RunCommand(
-    () -> {m_DriveSubsystem.tankDriveVolts(
+    () -> {m_drivetrain.tankDriveVolts(
                 DriveConstants.kMaxDrivetrainVolts * m_RStickXAxis.getAsDouble(),
                 -DriveConstants.kMaxDrivetrainVolts * m_RStickXAxis.getAsDouble());},
-    m_DriveSubsystem);
+    m_drivetrain);
 
   private OptionalDouble lastHeadingWithVision = OptionalDouble.empty();
 
   private final Command acquireHeadingForTarget = new RunCommand(
     () -> {
           if (LimeLight.getEntry("tv").getNumber(0).intValue() == 1){
-            lastHeadingWithVision = OptionalDouble.of(m_DriveSubsystem.getHeading());
+            lastHeadingWithVision = OptionalDouble.of(m_drivetrain.getHeading());
           }
     }
   );
@@ -128,11 +128,11 @@ public class RobotContainer {
               }
                 double left_command = steering_adjust + forwardValue;
                 double right_command = -steering_adjust + forwardValue;
-                m_DriveSubsystem.tankDriveVolts(
+                m_drivetrain.tankDriveVolts(
                   DriveConstants.kMaxDrivetrainVolts * left_command,
                   DriveConstants.kMaxDrivetrainVolts * right_command);
     },
-    m_DriveSubsystem);
+    m_drivetrain);
 
     private final JoystickButton B = new JoystickButton(m_Logitech_F310,2);
     private final JoystickButton A = new JoystickButton(m_Logitech_F310,1);
@@ -141,10 +141,10 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
-    m_DriveSubsystem.setDefaultCommand(m_F310_ArcadeDrive);
+    m_drivetrain.setDefaultCommand(m_F310_ArcadeDrive);
     //m_DriveSubsystem.setDefaultCommand(turnDrive);
     B.whileHeld(aimDrivetrain);
-    A.whileHeld(new TurnToHeading(m_DriveSubsystem, () -> 0));
+    A.whileHeld(new TurnToHeading(m_drivetrain, () -> 0));
     configureButtonBindings();
   }
 
@@ -211,25 +211,25 @@ public class RobotContainer {
 
     RamseteCommand ramseteCommand = new RamseteCommand(
         exampleTrajectory,
-        m_DriveSubsystem::getPose,
+        m_drivetrain::getPose,
         new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
         new SimpleMotorFeedforward(DriveConstants.ksVolts,
                                    DriveConstants.kvVoltSecondsPerMeter,
                                    DriveConstants.kaVoltSecondsSquaredPerMeter),
         DriveConstants.kDriveKinematics,
-        m_DriveSubsystem::getWheelSpeeds,
+        m_drivetrain::getWheelSpeeds,
         new PIDController(DriveConstants.kPDriveVel, 0, 0),
         new PIDController(DriveConstants.kPDriveVel, 0, 0),
         // RamseteCommand passes volts to the callback
-        m_DriveSubsystem::tankDriveVolts,
-        m_DriveSubsystem
+        m_drivetrain::tankDriveVolts,
+        m_drivetrain
     );
 
     // Reset odometry to the starting pose of the trajectory.
-   m_DriveSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
+   m_drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-  return ramseteCommand.andThen(() -> m_DriveSubsystem.tankDriveVolts(0, 0));
+  return ramseteCommand.andThen(() -> m_drivetrain.tankDriveVolts(0, 0));
   }
 
 
