@@ -38,8 +38,13 @@ public class Constants {
         public static final double kPDriveVel = 2.65;
 
         public static final double kTrackwidthMeters = 0.51;
-        public static final double kMetersRobotTravelPerEncoderCount = .15 * 3.14 / (2048 * 8.45);   // 0.15 meters - diameter of the wheel; 2048 units per rotation - Talon FX; 8.45:1 Gearbox Ratio;
-        public static final double kMetersRobotTravelPerSecondPerTalonUnits = kMetersRobotTravelPerEncoderCount * 10; // Meters of Robot Travel per second per encoder tick per 100 milliseconds; multiplied by 10 to convert to seconds.
+        
+        // 0.15 meters - diameter of the wheel; 2048 units per rotation - Talon FX; 8.45:1 Gearbox Ratio;
+        public static final double kMetersRobotTravelPerEncoderCount = .15 * 3.14 / (2048 * 8.45);   
+
+        // Meters of Robot Travel per second per encoder tick per 100 milliseconds; multiplied by 10 to convert to seconds.
+        public static final double kMetersRobotTravelPerSecondPerTalonUnits = kMetersRobotTravelPerEncoderCount * 10; 
+        
         public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(
                 kTrackwidthMeters);
 
