@@ -8,6 +8,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.Constants.*;
 
 
 public class TurnToHeading extends CommandBase {
@@ -33,7 +34,9 @@ public class TurnToHeading extends CommandBase {
   public void execute() {
     double error = m_desiredHeading.getAsDouble() - m_subsystem.getHeading();
     
-    m_subsystem.tankDriveVolts(-kP * 11 * error, kP * 11 * error);
+    m_subsystem.tankDriveVolts(
+      -kP * DriveConstants.kMaxDrivetrainVolts * error,
+      kP * DriveConstants.kMaxDrivetrainVolts * error);
   }
 
   // Called once the command ends or is interrupted.

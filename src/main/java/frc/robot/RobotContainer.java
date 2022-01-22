@@ -80,11 +80,15 @@ public class RobotContainer {
 
 
   private final Command tankDriveSame = new RunCommand(
-      () -> {m_DriveSubsystem.tankDriveVolts(11 * m_LStickYAxis.getAsDouble(), 11 * m_LStickYAxis.getAsDouble());},
+      () -> {m_DriveSubsystem.tankDriveVolts(
+                DriveConstants.kMaxDrivetrainVolts * m_LStickYAxis.getAsDouble(),
+                DriveConstants.kMaxDrivetrainVolts * m_LStickYAxis.getAsDouble());},
       m_DriveSubsystem);
 
   private final Command turnDrive = new RunCommand(
-    () -> {m_DriveSubsystem.tankDriveVolts(11 * m_RStickXAxis.getAsDouble(), -11 * m_RStickXAxis.getAsDouble());},
+    () -> {m_DriveSubsystem.tankDriveVolts(
+                DriveConstants.kMaxDrivetrainVolts * m_RStickXAxis.getAsDouble(),
+                -DriveConstants.kMaxDrivetrainVolts * m_RStickXAxis.getAsDouble());},
     m_DriveSubsystem);
 
   private OptionalDouble lastHeadingWithVision = OptionalDouble.empty();
@@ -124,7 +128,9 @@ public class RobotContainer {
               }
                 double left_command = steering_adjust + forwardValue;
                 double right_command = -steering_adjust + forwardValue;
-                m_DriveSubsystem.tankDriveVolts(11 * left_command, 11 * right_command);
+                m_DriveSubsystem.tankDriveVolts(
+                  DriveConstants.kMaxDrivetrainVolts * left_command,
+                  DriveConstants.kMaxDrivetrainVolts * right_command);
     },
     m_DriveSubsystem);
 

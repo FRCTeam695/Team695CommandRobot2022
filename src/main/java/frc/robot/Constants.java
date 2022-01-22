@@ -20,6 +20,10 @@ public class Constants {
 
 
     public final static class DriveConstants {
+
+        public static final double kMaxDrivetrainVolts = 11.0;
+
+
         public static final int kLeftMotor1Port = 11;
         public static final int kLeftMotor2Port = 12;
 
