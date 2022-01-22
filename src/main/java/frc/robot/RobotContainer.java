@@ -100,7 +100,7 @@ public class RobotContainer {
   );
 
 
-  private final Command aimDrivetrain = new RunCommand(
+  private final Command aimDrivetrainAtHub = new RunCommand(
     () -> {
             double Kp = -0.015;         //-0.015 on concrete
             double min_command = 0.075; //0.075 on concrete
@@ -141,7 +141,7 @@ public class RobotContainer {
     // Configure the button bindings
     m_drivetrain.setDefaultCommand(m_F310_ArcadeDrive);
     //m_DriveSubsystem.setDefaultCommand(turnDrive);
-    B.whileHeld(aimDrivetrain);
+    B.whileHeld(aimDrivetrainAtHub);
     A.whileHeld(new TurnToHeading(m_drivetrain, () -> 0));
     configureButtonBindings();
   }
