@@ -30,16 +30,11 @@ public class Constants {
         public static final int kRightMotor1Port = 13;
         public static final int kRightMotor2Port = 14;
 
-        // 10-31-2021 Constants:
-        /*public static final double ksVolts = 0.59;
-        public static final double kvVoltSecondsPerMeter = 0.881;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.114;*/
 
         public static final double ksVolts = 0.649;
         public static final double kvVoltSecondsPerMeter = 0.866;
         public static final double kaVoltSecondsSquaredPerMeter = 0.126;
 
-        // Example value only - as above, this must be tuned for your drive!
         public static final double kPDriveVel = 2.65;
 
         public static final double kTrackwidthMeters = 0.51;
