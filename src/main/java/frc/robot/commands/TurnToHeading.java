@@ -38,28 +38,23 @@ public class TurnToHeading extends CommandBase {
     double adjustedDesiredHeading = desiredHeading;
     double currentHeading = m_drivetrain.getHeading();
     double differenceInHeading = currentHeading - desiredHeading;
+    double adjustedDifferenceInHeading = differenceInHeading;
 
     double circleValue = 360.0;
-    double adjustedCircleValue = circleValue;
 
-    if (differenceInHeading > circleValue){
-      int numOfRotations = (int)(differenceInHeading/circleValue);
-      adjustedCircleValue = differenceInHeading - (circleValue * numOfRotations);
-    }
-    else if (differenceInHeading < -circleValue){
-      int numOfRotations = (int)(differenceInHeading/circleValue);
-      adjustedCircleValue = differenceInHeading - (circleValue * numOfRotations);
-    }
+    
 
-    if (differenceInHeading < -halfwayPoint){
-      adjustedDesiredHeading = desiredHeading - adjustedCircleValue;
+    while (adjustedDifferenceInHeading < -180){
+      adjustedDesiredHeading = adjustedDesiredHeading - 360;
+      adjustedDifferenceInHeading = currentHeading - adjustedDesiredHeading;
     }
-    else if (differenceInHeading > halfwayPoint){
-      adjustedDesiredHeading = desiredHeading + adjustedCircleValue;
+    while (adjustedDifferenceInHeading > 180){
+      adjustedDesiredHeading = adjustedDesiredHeading + 360;
+      adjustedDifferenceInHeading = currentHeading - adjustedDesiredHeading;
     }
 
     double error = adjustedDesiredHeading - currentHeading;
-    System.out.printf("%.3f           %.3f", desiredHeading, currentHeading);
+    System.out.printf("%.3f           %.3f           %.3f", currentHeading, desiredHeading, adjustedDesiredHeading);
     System.out.println();
 
     double driveVolts = kP * DriveConstants.kMaxDrivetrainVolts * error;
