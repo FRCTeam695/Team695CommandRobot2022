@@ -135,6 +135,13 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public void arcadeDrive(double fwd, double rot) {
       m_drive.arcadeDrive(fwd, rot);
+      
+    }
+
+    public void curvatureDrive(double fwd, double rot) {
+      double deadband = DifferentialDrive.kDefaultDeadband;
+      boolean isQuickTurn =  fwd < deadband && fwd > -deadband;
+      m_drive.curvatureDrive(fwd, rot, isQuickTurn);
     }
 
     /**

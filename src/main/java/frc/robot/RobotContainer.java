@@ -77,6 +77,15 @@ public class RobotContainer {
   private final DriveCommand m_F310_ArcadeDrive = new DriveCommand(m_drivetrain, m_LStickYAxis, m_RStickXAxis);
   private NetworkTable LimeLight;
 
+  private final Command m_F310_CurvatureDrive = new RunCommand(
+      () -> {
+              m_drivetrain.curvatureDrive
+              (
+               m_LStickYAxis.getAsDouble(), 
+               m_RStickXAxis.getAsDouble()
+               );
+      },
+      m_drivetrain);
 
   private final Command tankDriveSame = new RunCommand(
       () -> {m_drivetrain.tankDriveVolts(
@@ -147,7 +156,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
-    m_drivetrain.setDefaultCommand(m_F310_ArcadeDrive);
+    m_drivetrain.setDefaultCommand(m_F310_CurvatureDrive);
     //acquireHeadingForTarget.schedule();
     //m_DriveSubsystem.setDefaultCommand(turnDrive);
     //B.whileHeld(aimDrivetrainAtHub);
