@@ -32,11 +32,49 @@ public class TurnToHeading extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double error = m_desiredHeading.getAsDouble() - m_drivetrain.getHeading();
-    
+
+    double halfwayPoint = 180.0;
+    double desiredHeading = m_desiredHeading.getAsDouble();
+    double adjustedDesiredHeading = desiredHeading;
+    double currentHeading = m_drivetrain.getHeading();
+    double differenceInHeading = currentHeading - desiredHeading;
+
+    double circleValue = 360.0;
+    double adjustedCircleValue = circleValue;
+
+    if (differenceInHeading > circleValue){
+      int numOfRotations = (int)(differenceInHeading/circleValue);
+      adjustedCircleValue = differenceInHeading - (circleValue * numOfRotations);
+    }
+    else if (differenceInHeading < -circleValue){
+      int numOfRotations = (int)(differenceInHeading/circleValue);
+      adjustedCircleValue = differenceInHeading - (circleValue * numOfRotations);
+    }
+
+    if (differenceInHeading < -halfwayPoint){
+      adjustedDesiredHeading = desiredHeading - adjustedCircleValue;
+    }
+    else if (differenceInHeading > halfwayPoint){
+      adjustedDesiredHeading = desiredHeading + adjustedCircleValue;
+    }
+
+    double error = adjustedDesiredHeading - currentHeading;
+    System.out.printf("%.3f           %.3f", desiredHeading, currentHeading);
+    System.out.println();
+
+    double driveVolts = kP * DriveConstants.kMaxDrivetrainVolts * error;
+    double maxDriveVolts = 5.0;
+    if (driveVolts > maxDriveVolts){
+      driveVolts = maxDriveVolts;
+    }
+    else if (driveVolts < -maxDriveVolts){
+      driveVolts = -maxDriveVolts;
+    }
     m_drivetrain.tankDriveVolts(
-      -kP * DriveConstants.kMaxDrivetrainVolts * error,
-      kP * DriveConstants.kMaxDrivetrainVolts * error);
+      -driveVolts,
+      driveVolts);
+
+    //System.out.println("turning to: " + m_drivetrain.getHeading());
   }
 
   // Called once the command ends or is interrupted.

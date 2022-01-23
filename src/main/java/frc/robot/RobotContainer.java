@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.Limelight;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Encoder;
@@ -91,10 +92,15 @@ public class RobotContainer {
 
   private OptionalDouble lastHeadingWithVision = OptionalDouble.empty();
 
+  public boolean targetInView() {
+    return LimeLight.getEntry("tv").getNumber(0).intValue() == 1;
+  }
+
   private final Command acquireHeadingForTarget = new RunCommand(
     () -> {
-          if (LimeLight.getEntry("tv").getNumber(0).intValue() == 1){
-            lastHeadingWithVision = OptionalDouble.of(m_drivetrain.getHeading());
+          if (targetInView()){
+            double tx = LimeLight.getEntry("tx").getDouble(0);
+            lastHeadingWithVision = OptionalDouble.of(m_drivetrain.getHeading()-tx);
           }
     }
   );
@@ -110,7 +116,7 @@ public class RobotContainer {
             double forwardValue = (0.25)*applyDeadband(m_LStickYAxis.getAsDouble(),.1);
             double steering_adjust = 0;
 
-            if (LimeLight.getEntry("tv").getNumber(0).intValue() == 1){
+            if (targetInView()){
                 double tx = LimeLight.getEntry("tx").getDouble(0);
                 double adjustedMinCommand = Math.max(min_command - Math.abs(forwardValue), 0);
                 double heading_error = -tx;
@@ -134,15 +140,22 @@ public class RobotContainer {
 
     private final JoystickButton B = new JoystickButton(m_Logitech_F310,2);
     private final JoystickButton A = new JoystickButton(m_Logitech_F310,1);
+    private final JoystickButton X = new JoystickButton(m_Logitech_F310,3);
+
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     m_drivetrain.setDefaultCommand(m_F310_ArcadeDrive);
+    //acquireHeadingForTarget.schedule();
     //m_DriveSubsystem.setDefaultCommand(turnDrive);
-    B.whileHeld(aimDrivetrainAtHub);
-    A.whileHeld(new TurnToHeading(m_drivetrain, () -> 0));
+    //B.whileHeld(aimDrivetrainAtHub);
+    TurnToHeading gyroPointRobotAtHub = new TurnToHeading(m_drivetrain, () -> {return lastHeadingWithVision.orElse(0);});
+    ConditionalCommand gyroPointRobotAtHubIfHubAngleKnown = new ConditionalCommand(gyroPointRobotAtHub, new InstantCommand(() -> {}), () -> {return lastHeadingWithVision.isPresent();});
+    A.whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
+    //A.whileHeld(command);
+    X.whileHeld(acquireHeadingForTarget);
     configureButtonBindings();
   }
 
@@ -153,6 +166,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {}
+
+  public Command getAcquireHeadingForTarget(){
+    return acquireHeadingForTarget;
+  }
 
    /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -245,7 +262,9 @@ public class RobotContainer {
       //this.LimeLightCoPolar = LimeLight.getEntry("ty");
       //this.LimeLightContourArea = LimeLight.getEntry("ta");
 
-    System.out.printf("%.3f%n",LimeLight.getEntry("tx").getDouble(0));
+    //System.out.printf("%.3f%n",LimeLight.getEntry("tx").getDouble(0));
+    //System.out.println(lastHeadingWithVision);
+
     //System.out.print("");
     //System.out.println(m_Logitech_F310.getRawAxis(4));
 
