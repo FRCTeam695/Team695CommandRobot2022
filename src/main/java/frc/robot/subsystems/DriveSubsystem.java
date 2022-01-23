@@ -140,8 +140,12 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void curvatureDrive(double fwd, double rot) {
       double deadband = DifferentialDrive.kDefaultDeadband;
+      double adjustedRot = rot;
       boolean isQuickTurn =  fwd < deadband && fwd > -deadband;
-      m_drive.curvatureDrive(fwd, rot, isQuickTurn);
+      if (isQuickTurn){
+        adjustedRot = rot * Math.abs(rot);
+      }
+      m_drive.curvatureDrive(fwd, adjustedRot, isQuickTurn);
     }
 
     /**

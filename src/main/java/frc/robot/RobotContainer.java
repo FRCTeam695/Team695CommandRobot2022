@@ -67,9 +67,16 @@ import java.util.function.DoubleSupplier;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Joystick m_Logitech_F310 = new Joystick(0);
+  private final Joystick m_Extreme_3D_Pro_1 = new Joystick(2);
+  private final Joystick m_Extreme_3D_Pro_2 = new Joystick(3);
   private final DoubleSupplier m_LStickYAxis = () -> (-m_Logitech_F310.getY()); //Java Lambda Expression; In a Logitech F310 pushing forward yields a negative value
-  private final DoubleSupplier m_LStickXAxis = () -> (m_Logitech_F310.getX());
+  //private final DoubleSupplier m_LStickXAxis = () -> (m_Logitech_F310.getX());
   private final DoubleSupplier m_RStickXAxis = () -> (m_Logitech_F310.getRawAxis(4));
+
+  private final DoubleSupplier m_LeftStickYAxis = () -> (-m_Extreme_3D_Pro_1.getRawAxis(1));
+  private final DoubleSupplier m_LeftStickXAxis = () -> (m_Extreme_3D_Pro_1.getRawAxis(0));
+  private final DoubleSupplier m_RightStickXAxis = () -> (m_Extreme_3D_Pro_2.getRawAxis(0));
+
   private final NetworkTableInstance RobotMainNetworkTableInstance = NetworkTableInstance.getDefault();
   private final DriveSubsystem m_drivetrain = new DriveSubsystem();
   private final Limelight m_LimelightSubsystem = new Limelight(RobotMainNetworkTableInstance, 0);
@@ -81,11 +88,21 @@ public class RobotContainer {
       () -> {
               m_drivetrain.curvatureDrive
               (
-               m_LStickYAxis.getAsDouble(), 
-               m_RStickXAxis.getAsDouble()
+                m_LStickYAxis.getAsDouble(), 
+                m_RStickXAxis.getAsDouble()
                );
       },
       m_drivetrain);
+
+  private final Command m_Extreme_3D_Pro_CurvatureDrive = new RunCommand(
+    () -> {
+            m_drivetrain.curvatureDrive
+            (
+              m_LeftStickYAxis.getAsDouble(), 
+              m_RightStickXAxis.getAsDouble()
+              );
+    },
+    m_drivetrain);
 
   private final Command tankDriveSame = new RunCommand(
       () -> {m_drivetrain.tankDriveVolts(
@@ -122,7 +139,7 @@ public class RobotContainer {
 
             LimeLight = RobotMainNetworkTableInstance.getTable("limelight");
 
-            double forwardValue = (0.25)*applyDeadband(m_LStickYAxis.getAsDouble(),.1);
+            double forwardValue = (0.25)*applyDeadband( m_LeftStickYAxis.getAsDouble(),.1);
             double steering_adjust = 0;
 
             if (targetInView()){
@@ -150,6 +167,7 @@ public class RobotContainer {
     private final JoystickButton B = new JoystickButton(m_Logitech_F310,2);
     private final JoystickButton A = new JoystickButton(m_Logitech_F310,1);
     private final JoystickButton X = new JoystickButton(m_Logitech_F310,3);
+    private final JoystickButton LeftStickButton1 = new JoystickButton(m_Extreme_3D_Pro_1,1);
 
 
 
@@ -157,14 +175,13 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     m_drivetrain.setDefaultCommand(m_F310_CurvatureDrive);
-    //acquireHeadingForTarget.schedule();
-    //m_DriveSubsystem.setDefaultCommand(turnDrive);
-    //B.whileHeld(aimDrivetrainAtHub);
+    m_drivetrain.setDefaultCommand(m_Extreme_3D_Pro_CurvatureDrive);
     TurnToHeading gyroPointRobotAtHub = new TurnToHeading(m_drivetrain, () -> {return lastHeadingWithVision.orElse(0);});
     ConditionalCommand gyroPointRobotAtHubIfHubAngleKnown = new ConditionalCommand(gyroPointRobotAtHub, new InstantCommand(() -> {}), () -> {return lastHeadingWithVision.isPresent();});
     A.whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
-    //A.whileHeld(command);
     X.whileHeld(acquireHeadingForTarget);
+    //A.whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
+    LeftStickButton1.whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
     configureButtonBindings();
   }
 
