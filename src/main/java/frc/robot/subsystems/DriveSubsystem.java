@@ -8,18 +8,18 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 
-//import edu.wpi.first.wpilibj.examples.ramsetecommand.Constants.DriveConstants;
+//import frc.robot.Constants.DriveConstants;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -30,12 +30,12 @@ public class DriveSubsystem extends SubsystemBase {
   private final WPI_TalonFX m_rightmotor2 = new WPI_TalonFX(DriveConstants.kRightMotor2Port);
 
   // The motors on the left side of the drive.
-  private final SpeedControllerGroup m_leftMotors =
-      new SpeedControllerGroup(m_leftmotor1, m_leftmotor2);
+  private final MotorControllerGroup m_leftMotors =
+      new MotorControllerGroup(m_leftmotor1, m_leftmotor2);
 
   // The motors on the right side of the drive.
-  private final SpeedControllerGroup m_rightMotors =
-      new SpeedControllerGroup(m_rightmotor1, m_rightmotor2);
+  private final MotorControllerGroup m_rightMotors =
+      new MotorControllerGroup(m_rightmotor1, m_rightmotor2);
 
 
 
