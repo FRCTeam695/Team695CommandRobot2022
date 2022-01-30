@@ -18,6 +18,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.IntakeSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -93,6 +94,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     m_robotContainer.getAcquireHeadingForTarget().schedule();
+    IntakeSubsystem.m_IntakeLiftMotor.setSelectedSensorPosition(0);
   }
 
   /** This function is called periodically during operator control. */

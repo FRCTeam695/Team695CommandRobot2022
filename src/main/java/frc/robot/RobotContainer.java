@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.Limelight;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -31,6 +32,8 @@ import frc.robot.Constants.*;
 import frc.robot.commands.*;
 
 import static edu.wpi.first.wpilibj.XboxController.Button;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
 
 import edu.wpi.first.math.*;
 import edu.wpi.first.math.controller.PIDController;
@@ -55,6 +58,7 @@ import frc.robot.subsystems.DriveSubsystem;*/
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
 import java.util.OptionalDouble;
@@ -68,6 +72,8 @@ import java.util.function.DoubleSupplier;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  private final IntakeSubsystem m_IntakeMotor = new IntakeSubsystem();
+
   private final Joystick m_Logitech_F310 = new Joystick(0);
   private final Joystick m_Extreme_3D_Pro_1 = new Joystick(2);
   private final Joystick m_Extreme_3D_Pro_2 = new Joystick(3);
@@ -79,12 +85,40 @@ public class RobotContainer {
   private final DoubleSupplier m_LeftStickXAxis = () -> (m_Extreme_3D_Pro_1.getRawAxis(0));
   private final DoubleSupplier m_RightStickXAxis = () -> (m_Extreme_3D_Pro_2.getRawAxis(0));
 
+  private final DoubleSupplier m_LeftStickTwistValue = () -> (m_Extreme_3D_Pro_1.getRawAxis(2));
+
   private final NetworkTableInstance RobotMainNetworkTableInstance = NetworkTableInstance.getDefault();
   private final DriveSubsystem m_drivetrain = new DriveSubsystem();
   private final Limelight m_LimelightSubsystem = new Limelight(RobotMainNetworkTableInstance, 0);
 
   private final DriveCommand m_F310_ArcadeDrive = new DriveCommand(m_drivetrain, m_LStickYAxis, m_RStickXAxis);
   private NetworkTable LimeLight;
+
+  private final Command m_IntakeMotorRunCommand = new RunCommand(
+     () -> {
+        m_IntakeMotor.setIntakeSpeed(
+          m_LeftStickTwistValue.getAsDouble()
+        );
+        System.out.println(m_LeftStickTwistValue.getAsDouble());
+     },
+  m_IntakeMotor);
+
+  private final Command m_IntakeMotorLiftRunCommand = new RunCommand(
+     () -> {
+       m_IntakeMotor.setIntakeLiftPosition(
+         true
+       );
+       System.out.println(IntakeSubsystem.m_IntakeLiftMotor.getSelectedSensorPosition());
+     },
+  m_IntakeMotor);
+
+  private final Command m_IntakeMotorLiftRunCommandDisengageCommand = new RunCommand(
+    () -> {
+      m_IntakeMotor.setIntakeLiftPosition(
+        false
+      );
+    },
+  m_IntakeMotor);
 
   private final Command m_F310_CurvatureDrive = new RunCommand(
       () -> {
@@ -170,6 +204,8 @@ public class RobotContainer {
     private final JoystickButton A = new JoystickButton(m_Logitech_F310,1);
     private final JoystickButton X = new JoystickButton(m_Logitech_F310,3);
     private final JoystickButton LeftStickButton1 = new JoystickButton(m_Extreme_3D_Pro_1,1);
+    private final JoystickButton LeftStickButton2 = new JoystickButton(m_Extreme_3D_Pro_1,2);
+    private final JoystickButton LeftStickButton8 = new JoystickButton(m_Extreme_3D_Pro_1,8);
 
 
 
@@ -181,6 +217,9 @@ public class RobotContainer {
     ConditionalCommand gyroPointRobotAtHubIfHubAngleKnown = new ConditionalCommand(gyroPointRobotAtHub, new InstantCommand(() -> {}), () -> {return lastHeadingWithVision.isPresent();});
     //A.whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
     LeftStickButton1.whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
+    LeftStickButton2.whileHeld(m_IntakeMotorRunCommand);
+    LeftStickButton8.whenActive(m_IntakeMotorLiftRunCommand);
+    LeftStickButton8.whenInactive(m_IntakeMotorLiftRunCommandDisengageCommand);
     configureButtonBindings();
   }
 
