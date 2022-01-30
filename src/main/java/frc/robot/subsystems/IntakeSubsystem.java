@@ -23,7 +23,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setIntakeLiftPosition(boolean liftDown) {
     if (liftDown == true){
-      if (m_IntakeLiftMotor.getSelectedSensorPosition() < 10000000)        //1000000000 is a placeholder
+      if (m_IntakeLiftMotor.getSelectedSensorPosition() < 100000)        //1000000000 is a placeholder
       {
          m_IntakeLiftMotor.set(0.25);   //Value of 0.25 subject to change
         //System.out.println(m_IntakeLiftMotor.getSelectedSensorPosition());
