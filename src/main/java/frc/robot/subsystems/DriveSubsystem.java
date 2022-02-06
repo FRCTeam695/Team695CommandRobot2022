@@ -30,28 +30,14 @@ public class DriveSubsystem extends SubsystemBase {
   private final WPI_TalonFX m_rightmotor2 = new WPI_TalonFX(DriveConstants.kRightMotor2Port);
 
   // The motors on the left side of the drive.
-  private final MotorControllerGroup m_leftMotors =
-      new MotorControllerGroup(m_leftmotor1, m_leftmotor2);
+  private final MotorControllerGroup m_leftMotors;
 
   // The motors on the right side of the drive.
-  private final MotorControllerGroup m_rightMotors =
-      new MotorControllerGroup(m_rightmotor1, m_rightmotor2);
+  private final MotorControllerGroup m_rightMotors;
 
 
-
-/*
-  // The motors on the left side of the drive.
-  private final SpeedControllerGroup m_leftMotors =
-      new SpeedControllerGroup(new WPI_TalonFX(DriveConstants.kLeftMotor1Port),
-                               new WPI_TalonFX(DriveConstants.kLeftMotor2Port));
-
-  // The motors on the right side of the drive.
-  private final SpeedControllerGroup m_rightMotors =
-      new SpeedControllerGroup(new WPI_TalonFX(DriveConstants.kRightMotor1Port),
-                               new WPI_TalonFX(DriveConstants.kRightMotor2Port));
-*/
   // The robot's drive
-  private final DifferentialDrive m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
+  private final DifferentialDrive m_drive;
 
   // The left-side drive encoder
 //  private final Encoder m_leftEncoder =
@@ -73,8 +59,12 @@ public class DriveSubsystem extends SubsystemBase {
     // Sets the distance per pulse for the encoders
 //    m_leftEncoder.setDistancePerPulse(.15*3.14/(2048*8));
 //    m_rightEncoder.setDistancePerPulse(.15*3.14/(2048*8));
+    m_leftMotors = new MotorControllerGroup(m_leftmotor1, m_leftmotor2);
+    m_rightMotors = new MotorControllerGroup(m_rightmotor1, m_rightmotor2);
+    m_rightMotors.setInverted(true);
+    m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
 
-   resetEncoders();
+    resetEncoders();
 
     m_gyro.calibrate();
     m_gyro.reset();
