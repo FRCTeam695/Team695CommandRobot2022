@@ -137,9 +137,9 @@ public class RobotContainer {
         double rot = m_RightStickXAxis.getAsDouble();
         //double deadband = DifferentialDrive.kDefaultDeadband;
         double adjustedRot = rot;
-        double deadband = m_LeftStickSlider.getAsDouble();
-        deadband = (deadband + 1)/2;
-        System.out.println(deadband);
+        double deadband = 0.2;
+        //deadband = (deadband + 1)/2;
+        //System.out.println(deadband);
 
         boolean isQuickTurn =  fwd < deadband && fwd > -deadband;
         if (isQuickTurn){
