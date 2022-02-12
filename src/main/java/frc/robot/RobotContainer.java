@@ -81,9 +81,10 @@ public class RobotContainer {
   //private final DoubleSupplier m_LStickXAxis = () -> (m_Logitech_F310.getX());
   private final DoubleSupplier m_RStickXAxis = () -> (m_Logitech_F310.getRawAxis(4));
 
-  private final DoubleSupplier m_LeftStickYAxis = () -> (-m_Extreme_3D_Pro_1.getRawAxis(1));
-  private final DoubleSupplier m_LeftStickXAxis = () -> (m_Extreme_3D_Pro_1.getRawAxis(0));
-  private final DoubleSupplier m_RightStickXAxis = () -> (m_Extreme_3D_Pro_2.getRawAxis(0));
+  private final DoubleSupplier m_LeftStickYAxis = () -> (-applyDeadband(m_Extreme_3D_Pro_1.getRawAxis(1), Constants.OIConstants.kExtreme3DProDeadband));
+  private final DoubleSupplier m_LeftStickXAxis = () -> (applyDeadband(m_Extreme_3D_Pro_1.getRawAxis(0),  Constants.OIConstants.kExtreme3DProDeadband));
+  private final DoubleSupplier m_RightStickXAxis = () -> (applyDeadband(m_Extreme_3D_Pro_2.getRawAxis(0),  Constants.OIConstants.kExtreme3DProDeadband));
+  private final DoubleSupplier m_LeftStickSlider = () -> (m_Extreme_3D_Pro_1.getRawAxis(3));
 
   private final DoubleSupplier m_LeftStickTwistValue = () -> (m_Extreme_3D_Pro_1.getRawAxis(2));
 
@@ -120,7 +121,7 @@ public class RobotContainer {
     },
   m_IntakeMotor);
 
-  private final Command m_F310_CurvatureDrive = new RunCommand(
+  /*private final Command m_F310_CurvatureDrive = new RunCommand(
       () -> {
               m_drivetrain.curvatureDrive
               (
@@ -128,23 +129,74 @@ public class RobotContainer {
                 m_RStickXAxis.getAsDouble()
                );
       },
-      m_drivetrain);
+      m_drivetrain);*/
 
   private final Command m_Extreme_3D_Pro_CurvatureDrive = new RunCommand(
-    () -> {
+      () -> {
+        double fwd = m_LeftStickYAxis.getAsDouble();
+        double rot = m_RightStickXAxis.getAsDouble();
+        //double deadband = DifferentialDrive.kDefaultDeadband;
+        double adjustedRot = rot;
+        double deadband = m_LeftStickSlider.getAsDouble();
+        deadband = (deadband + 1)/2;
+        System.out.println(deadband);
+
+        boolean isQuickTurn =  fwd < deadband && fwd > -deadband;
+        if (isQuickTurn){
+          adjustedRot = rot * Math.abs(rot);
+        }
+
+        //m_drive.curvatureDrive(fwd, adjustedRot, isQuickTurn);
+    
+        double xSpeed = MathUtil.clamp(fwd, -1.0, 1.0);
+        double zRotation = MathUtil.clamp(adjustedRot, -1.0, 1.0);
+    
+        double leftSpeed;
+        double rightSpeed;
+    
+        if (isQuickTurn) {
+          leftSpeed = xSpeed + zRotation;
+          rightSpeed = xSpeed - zRotation;
+        } else {
+          leftSpeed = xSpeed + Math.abs(xSpeed) * zRotation;
+          rightSpeed = xSpeed - Math.abs(xSpeed) * zRotation;
+        }
+    
+        // Normalize wheel speeds
+        double maxMagnitude = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
+        if (maxMagnitude > 1.0) {
+          leftSpeed /= maxMagnitude;
+          rightSpeed /= maxMagnitude;
+        }
+        m_drivetrain.tankDriveVolts(
+          DriveConstants.kMaxDrivetrainVolts * leftSpeed,
+          DriveConstants.kMaxDrivetrainVolts * rightSpeed);
+      },
+      m_drivetrain);
+    /*() -> {
             m_drivetrain.curvatureDrive
             (
               m_LeftStickYAxis.getAsDouble(), 
               m_RightStickXAxis.getAsDouble()
               );
     },
-    m_drivetrain);
+    m_drivetrain);*/
 
   private final Command tankDriveSame = new RunCommand(
       () -> {m_drivetrain.tankDriveVolts(
                 DriveConstants.kMaxDrivetrainVolts * m_LStickYAxis.getAsDouble(),
                 DriveConstants.kMaxDrivetrainVolts * m_LStickYAxis.getAsDouble());},
       m_drivetrain);
+
+      /*private final Command testCurvatureDrive = new RunCommand(
+        () -> {
+                m_drivetrain.curvatureDrive
+                (
+                  0.1, 
+                  0
+                  );
+        },
+        m_drivetrain);*/    
 
   private final Command turnDrive = new RunCommand(
     () -> {m_drivetrain.tankDriveVolts(
@@ -206,7 +258,7 @@ public class RobotContainer {
     private final JoystickButton LeftStickButton1 = new JoystickButton(m_Extreme_3D_Pro_1,1);
     private final JoystickButton LeftStickButton2 = new JoystickButton(m_Extreme_3D_Pro_1,2);
     private final JoystickButton LeftStickButton8 = new JoystickButton(m_Extreme_3D_Pro_1,8);
-
+    private final JoystickButton LeftStickButton3 = new JoystickButton(m_Extreme_3D_Pro_1,3);
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -220,6 +272,7 @@ public class RobotContainer {
     LeftStickButton2.whileHeld(m_IntakeMotorRunCommand);
     LeftStickButton8.whenActive(m_IntakeMotorLiftRunCommand);
     LeftStickButton8.whenInactive(m_IntakeMotorLiftRunCommandDisengageCommand);
+    //LeftStickButton3.whileHeld(testCurvatureDrive);
     configureButtonBindings();
   }
 
