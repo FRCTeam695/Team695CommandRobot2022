@@ -306,8 +306,8 @@ public class RobotContainer {
 
     // Create config for trajectory
     TrajectoryConfig config =
-        new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond * 0.7,
-                             AutoConstants.kMaxAccelerationMetersPerSecondSquared * 0.5)
+        new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
+                             AutoConstants.kMaxAccelerationMetersPerSecondSquared)
             // Add kinematics to ensure max speed is actually obeyed
             .setKinematics(DriveConstants.kDriveKinematics)
             // Apply the voltage constraint
@@ -320,13 +320,13 @@ public class RobotContainer {
         // Pass through these two interior waypoints, making an 's' curve path
         List.of(
           
-          /*
+          
           //new Translation2d(1, 0),
           //new Translation2d(2, 0)
             new Translation2d(1, 1), //Inverted both y coordinates
             new Translation2d(2, -1)
           //new Translation2d(3,0)
-        */
+        
 
             /*new Translation2d(1,-1),
             new Translation2d(-2,-1.5),
@@ -350,8 +350,8 @@ public class RobotContainer {
                                    DriveConstants.kaVoltSecondsSquaredPerMeter),
         DriveConstants.kDriveKinematics,
         m_drivetrain::getWheelSpeeds,
-        new PIDController(DriveConstants.kPDriveVel, 0, 0),
-        new PIDController(DriveConstants.kPDriveVel, 0, 0),
+        new PIDController(DriveConstants.kPDriveVelMetersPerSec, 0, 0),
+        new PIDController(DriveConstants.kPDriveVelMetersPerSec, 0, 0),
         // RamseteCommand passes volts to the callback
         m_drivetrain::tankDriveVolts,
         m_drivetrain

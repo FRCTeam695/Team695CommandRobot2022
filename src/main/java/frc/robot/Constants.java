@@ -31,13 +31,13 @@ public class Constants {
         public static final int kRightMotor2Port = 14;
 
 
-        public static final double ksVolts = 0.649;
-        public static final double kvVoltSecondsPerMeter = 0.866;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.126;
+        public static final double ksVolts = 0.59873;
+        public static final double kvVoltSecondsPerMeter = 1.9303;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.28111;
 
-        public static final double kPDriveVel = 2.65;
+        public static final double kPDriveVelMetersPerSec = 2.65;
 
-        public static final double kTrackwidthMeters = 0.51;
+        public static final double kTrackwidthMeters = 0.68058;
         
         // 0.15 meters - diameter of the wheel; 2048 units per rotation - Talon FX; 8.45:1 Gearbox Ratio;
         public static final double kMetersRobotTravelPerEncoderCount = .15 * 3.14 / (2048 * 8.45);   
@@ -56,7 +56,7 @@ public class Constants {
         
         public static final class AutoConstants {
             public static final double kMaxSpeedMetersPerSecond = 1;
-            public static final double kMaxAccelerationMetersPerSecondSquared = 1;
+            public static final double kMaxAccelerationMetersPerSecondSquared = 0.5;
         
             // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
             public static final double kRamseteB = 2;
