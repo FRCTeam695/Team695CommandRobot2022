@@ -266,18 +266,14 @@ public class RobotContainer {
     private final JoystickButton LeftStickButton8 = new JoystickButton(m_Extreme_3D_Pro_1,8);
     private final JoystickButton LeftStickButton3 = new JoystickButton(m_Extreme_3D_Pro_1,3);
 
-    private String trajectoryJSON = "paths/output/GrabCargoAndScore.wpilib.json";
-    private Trajectory trajectory = new Trajectory();
-
+    private Trajectory HubToMiddleLeftBlueCargoTrajectory = importTrajectory("paths/output/HubToMiddleLeftBlueCargo.wpilib.json");
+    private Trajectory MiddleLeftBlueCargoToHubTrajectory = importTrajectory("paths/output/MiddleLeftBlueCargoToHub.wpilib.json");
+    private Trajectory HubToBottomLeftBlueCargo1Trajectory = importTrajectory("paths/output/HubToBottomLeftBlueCargo1.wpilib.json");
+    private Trajectory HubToBottomLeftBlueCargo2Trajectory = importTrajectory("paths/output/HubToBottomLeftBlueCargo2.wpilib.json");
+    private Trajectory BottomLeftBlueCargoToHubTrajectory = importTrajectory("paths/output/BottomLeftBlueCargoToHub.wpilib.json");
+    
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    try {
-      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-      System.out.println("Trajectory loaded!");
-   } catch (IOException ex) {
-      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
-   }
     // Configure the button bindings
     m_drivetrain.setDefaultCommand(m_Extreme_3D_Pro_CurvatureDrive);
     TurnToHeading gyroPointRobotAtHub = new TurnToHeading(m_drivetrain, () -> {return lastHeadingWithVision.orElse(0);});
@@ -289,6 +285,21 @@ public class RobotContainer {
     LeftStickButton8.whenInactive(m_IntakeMotorLiftRunCommandDisengageCommand);
     //LeftStickButton3.whileHeld(testCurvatureDrive);
     configureButtonBindings();
+  }
+
+  private Trajectory importTrajectory(String trajectoryPathString) {
+    Trajectory toReturn = new Trajectory();
+    try
+    {
+      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryPathString);
+      toReturn = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      System.out.println("Trajectory loaded: " + trajectoryPathString);
+   }
+   catch (IOException ex)
+   {
+      DriverStation.reportError("Unable to open trajectory: " + trajectoryPathString, ex.getStackTrace());
+   }
+   return toReturn;
   }
 
   /**
@@ -310,54 +321,18 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
 
-    // Create a voltage constraint to ensure we don't accelerate too fast
-    var autoVoltageConstraint =
-        new DifferentialDriveVoltageConstraint(
-            new SimpleMotorFeedforward(DriveConstants.ksVolts,
-                                       DriveConstants.kvVoltSecondsPerMeter,
-                                       DriveConstants.kaVoltSecondsSquaredPerMeter),
-            DriveConstants.kDriveKinematics,
-            10);
+    return new InstantCommand(()-> {m_drivetrain.resetOdometry(HubToMiddleLeftBlueCargoTrajectory.getInitialPose());})
+    .andThen(generateRamseteCommand(HubToMiddleLeftBlueCargoTrajectory))
+    .andThen(generateRamseteCommand(MiddleLeftBlueCargoToHubTrajectory))
+    .andThen(generateRamseteCommand(HubToBottomLeftBlueCargo1Trajectory))
+    .andThen(generateRamseteCommand(HubToBottomLeftBlueCargo2Trajectory))
+    .andThen(generateRamseteCommand(BottomLeftBlueCargoToHubTrajectory))
+    .andThen(() -> m_drivetrain.tankDriveVolts(0, 0));
+  }
 
-    // Create config for trajectory
-    TrajectoryConfig config =
-        new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
-                             AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DriveConstants.kDriveKinematics)
-            // Apply the voltage constraint
-            .addConstraint(autoVoltageConstraint);
-
-    // An example trajectory to follow.  All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(
-          
-          
-          //new Translation2d(1, 0),
-          //new Translation2d(2, 0)
-            new Translation2d(1, 1), //Inverted both y coordinates
-            new Translation2d(2, -1)
-          //new Translation2d(3,0)
-        
-
-            /*new Translation2d(1,-1),
-            new Translation2d(-2,-1.5),
-            new Translation2d(-6,-1.5),
-            new Translation2d(-7,-1),
-            new Translation2d(-5,-.5)*/
-        ),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(0)),
-        //new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass config
-        config
-    );
-
+  private Command generateRamseteCommand(Trajectory traj) {
     RamseteCommand ramseteCommand = new RamseteCommand(
-        trajectory,
+        traj,
         m_drivetrain::getPose,
         new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
         new SimpleMotorFeedforward(DriveConstants.ksVolts,
@@ -372,11 +347,10 @@ public class RobotContainer {
         m_drivetrain
     );
 
-    // Reset odometry to the starting pose of the trajectory.
-   m_drivetrain.resetOdometry(trajectory.getInitialPose());
+    
 
     // Run path following command, then stop at the end.
-  return ramseteCommand.andThen(() -> m_drivetrain.tankDriveVolts(0, 0));
+  return ramseteCommand;
   }
 
 
