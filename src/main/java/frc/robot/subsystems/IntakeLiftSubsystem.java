@@ -4,54 +4,39 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeLiftSubsystem extends SubsystemBase {
   /** Creates a new IntakeLiftSubsystem. */
   public final static WPI_TalonFX m_IntakeLiftMotor = new WPI_TalonFX(2);
 
-  public IntakeLiftSubsystem() {}
+  private static final double ENCODER_POSITION_WHEN_UP = 58508;
 
-  boolean liftDown = true;
-  boolean liftUp = false;
-
-  public void moveIntakeLiftUp(boolean liftDown) {
-    if (liftDown == true){
-      if (m_IntakeLiftMotor.getSelectedSensorPosition() < 58508)
-      {
-         m_IntakeLiftMotor.set(0.5);   //Value of 0.5 subject to change
-        //System.out.println(m_IntakeLiftMotor.getSelectedSensorPosition());
-      }    
-      else{
-        m_IntakeLiftMotor.set(0);
-        liftUp = true;
-      }
-  } 
-  else{
-    m_IntakeLiftMotor.set(0);
+  public IntakeLiftSubsystem() {
+    m_IntakeLiftMotor.setNeutralMode(NeutralMode.Brake);
   }
-}
-
-  public void moveIntakeLiftDown(boolean liftUp)  {
-    if (liftUp == true){
-      if (m_IntakeLiftMotor.getSelectedSensorPosition() > 0)
-      {
-        m_IntakeLiftMotor.set(-0.5);
-      }
-      else{
-        m_IntakeLiftMotor.set(0);
-        liftDown = true;
-      }
-    }
+  //0 is stopped
+  //0 to 1 is upward
+  //0 to -1 is downward
+  public void setArmPercent(double percentVBus){
+    m_IntakeLiftMotor.set(percentVBus);
+  }
+  //1 is up position
+  //0 is down position
+  public double getArmPosition(){
+    return m_IntakeLiftMotor.getSelectedSensorPosition() / ENCODER_POSITION_WHEN_UP;
   }
 
   public void setIntakeLiftPositionToZero () {
-    m_IntakeLiftMotor.setSelectedSensorPosition(0);
+    m_IntakeLiftMotor.setSelectedSensorPosition(ENCODER_POSITION_WHEN_UP);
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("IntakeLiftPosition", getArmPosition());
   }
 }

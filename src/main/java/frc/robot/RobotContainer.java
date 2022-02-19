@@ -112,22 +112,6 @@ public class RobotContainer {
      },
   m_IntakeSubsystem);
 
-  private final Command m_IntakeMotorLiftRunCommand = new RunCommand(
-     () -> {
-       m_IntakeLiftSubsystem.moveIntakeLiftUp(
-         true
-       );
-       System.out.println(IntakeLiftSubsystem.m_IntakeLiftMotor.getSelectedSensorPosition());
-     },
-  m_IntakeSubsystem);
-
-  private final Command m_IntakeMotorLiftRunCommandDisengageCommand = new RunCommand(
-    () -> {
-      m_IntakeLiftSubsystem.moveIntakeLiftUp(
-        false
-      );
-    },
-  m_IntakeSubsystem);
 
   /*private final Command m_F310_CurvatureDrive = new RunCommand(
       () -> {
@@ -266,6 +250,7 @@ public class RobotContainer {
     private final JoystickButton LeftStickButton1 = new JoystickButton(m_Extreme_3D_Pro_1,1);
     private final JoystickButton LeftStickButton2 = new JoystickButton(m_Extreme_3D_Pro_1,2);
     private final JoystickButton LeftStickButton8 = new JoystickButton(m_Extreme_3D_Pro_1,8);
+    private final JoystickButton LeftStickButton9 = new JoystickButton(m_Extreme_3D_Pro_1,9);
     private final JoystickButton LeftStickButton3 = new JoystickButton(m_Extreme_3D_Pro_1,3);
 
     private Trajectory HubToMiddleLeftBlueCargoTrajectory = importTrajectory("paths/output/HubToMiddleLeftBlueCargo.wpilib.json");
@@ -279,13 +264,14 @@ public class RobotContainer {
     // Configure the button bindings
     m_drivetrain.setDefaultCommand(m_Extreme_3D_Pro_CurvatureDrive);
     m_IntakeSubsystem.setDefaultCommand(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem).withName("defaultStop"));
+    m_IntakeLiftSubsystem.setDefaultCommand(new IntakeLiftStop(m_IntakeLiftSubsystem));
     TurnToHeading gyroPointRobotAtHub = new TurnToHeading(m_drivetrain, () -> {return lastHeadingWithVision.orElse(0);});
     ConditionalCommand gyroPointRobotAtHubIfHubAngleKnown = new ConditionalCommand(gyroPointRobotAtHub, new InstantCommand(() -> {}), () -> {return lastHeadingWithVision.isPresent();});
     //A.whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
     LeftStickButton1.whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
     LeftStickButton2.whileHeld(m_IntakeMotorRunCommand);
-    LeftStickButton8.whenActive(m_IntakeMotorLiftRunCommand);
-    LeftStickButton8.whenInactive(m_IntakeMotorLiftRunCommandDisengageCommand);
+    LeftStickButton8.whenPressed(new RaiseIntake(m_IntakeLiftSubsystem));
+    LeftStickButton9.whenPressed(new LowerIntake(m_IntakeLiftSubsystem));
     //LeftStickButton3.whileHeld(testCurvatureDrive);
     configureButtonBindings();
   }
@@ -329,25 +315,26 @@ public class RobotContainer {
       (
         generateRamseteCommand(HubToMiddleLeftBlueCargoTrajectory)
         .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(1);}, m_IntakeSubsystem))
+        .alongWith(new LowerIntake(m_IntakeLiftSubsystem))
       )
     .andThen
       (
         generateRamseteCommand(MiddleLeftBlueCargoToHubTrajectory)
         .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem))
-        .raceWith(new RunCommand(()-> {m_IntakeLiftSubsystem.moveIntakeLiftUp(true);}, m_IntakeLiftSubsystem))
+        .alongWith(new RaiseIntake(m_IntakeLiftSubsystem))
       )
     .andThen
       (
         generateRamseteCommand(HubToBottomLeftBlueCargo1Trajectory)
         .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(1);}, m_IntakeSubsystem))
-        .raceWith(new RunCommand(()-> {m_IntakeLiftSubsystem.moveIntakeLiftDown(true);}, m_IntakeLiftSubsystem))
+        .alongWith(new LowerIntake(m_IntakeLiftSubsystem))
       )
     .andThen(generateRamseteCommand(HubToBottomLeftBlueCargo2Trajectory))
     .andThen
       (
         generateRamseteCommand(BottomLeftBlueCargoToHubTrajectory)
         .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem))
-        .raceWith(new RunCommand(()-> {m_IntakeLiftSubsystem.moveIntakeLiftUp(true);}, m_IntakeLiftSubsystem))
+        .alongWith(new RaiseIntake(m_IntakeLiftSubsystem))
       )
     .andThen(() -> m_drivetrain.tankDriveVolts(0, 0));
   }
