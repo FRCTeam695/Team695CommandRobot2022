@@ -78,7 +78,7 @@ import java.util.function.DoubleSupplier;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final IntakeSubsystem m_IntakeMotor = new IntakeSubsystem();
+  private final IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
 
   private final Joystick m_Logitech_F310 = new Joystick(0);
   private final Joystick m_Extreme_3D_Pro_1 = new Joystick(2);
@@ -103,29 +103,29 @@ public class RobotContainer {
 
   private final Command m_IntakeMotorRunCommand = new RunCommand(
      () -> {
-        m_IntakeMotor.setIntakeSpeed(
+        m_IntakeSubsystem.setIntakeSpeed(
           m_LeftStickTwistValue.getAsDouble()
         );
         System.out.println(m_LeftStickTwistValue.getAsDouble());
      },
-  m_IntakeMotor);
+  m_IntakeSubsystem);
 
   private final Command m_IntakeMotorLiftRunCommand = new RunCommand(
      () -> {
-       m_IntakeMotor.setIntakeLiftPosition(
+       m_IntakeSubsystem.setIntakeLiftPosition(
          true
        );
        System.out.println(IntakeSubsystem.m_IntakeLiftMotor.getSelectedSensorPosition());
      },
-  m_IntakeMotor);
+  m_IntakeSubsystem);
 
   private final Command m_IntakeMotorLiftRunCommandDisengageCommand = new RunCommand(
     () -> {
-      m_IntakeMotor.setIntakeLiftPosition(
+      m_IntakeSubsystem.setIntakeLiftPosition(
         false
       );
     },
-  m_IntakeMotor);
+  m_IntakeSubsystem);
 
   /*private final Command m_F310_CurvatureDrive = new RunCommand(
       () -> {
