@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IntakeLiftSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.Limelight;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -79,6 +80,7 @@ import java.util.function.DoubleSupplier;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
+  private final IntakeLiftSubsystem m_IntakeLiftSubsystem = new IntakeLiftSubsystem();
 
   private final Joystick m_Logitech_F310 = new Joystick(0);
   private final Joystick m_Extreme_3D_Pro_1 = new Joystick(2);
@@ -112,16 +114,16 @@ public class RobotContainer {
 
   private final Command m_IntakeMotorLiftRunCommand = new RunCommand(
      () -> {
-       m_IntakeSubsystem.setIntakeLiftPosition(
+       m_IntakeLiftSubsystem.moveIntakeLiftUp(
          true
        );
-       System.out.println(IntakeSubsystem.m_IntakeLiftMotor.getSelectedSensorPosition());
+       System.out.println(IntakeLiftSubsystem.m_IntakeLiftMotor.getSelectedSensorPosition());
      },
   m_IntakeSubsystem);
 
   private final Command m_IntakeMotorLiftRunCommandDisengageCommand = new RunCommand(
     () -> {
-      m_IntakeSubsystem.setIntakeLiftPosition(
+      m_IntakeLiftSubsystem.moveIntakeLiftUp(
         false
       );
     },
