@@ -333,9 +333,17 @@ public class RobotContainer {
         generateRamseteCommand(MiddleLeftBlueCargoToHubTrajectory)
         .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem))
       )
-    .andThen(generateRamseteCommand(HubToBottomLeftBlueCargo1Trajectory))
+    .andThen
+      (
+        generateRamseteCommand(HubToBottomLeftBlueCargo1Trajectory)
+        .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(1);}, m_IntakeSubsystem))
+      )
     .andThen(generateRamseteCommand(HubToBottomLeftBlueCargo2Trajectory))
-    .andThen(generateRamseteCommand(BottomLeftBlueCargoToHubTrajectory))
+    .andThen
+      (
+        generateRamseteCommand(BottomLeftBlueCargoToHubTrajectory)
+        .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem))
+      )
     .andThen(() -> m_drivetrain.tankDriveVolts(0, 0));
   }
 
