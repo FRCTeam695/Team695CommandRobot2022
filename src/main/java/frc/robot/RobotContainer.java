@@ -276,6 +276,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     m_drivetrain.setDefaultCommand(m_Extreme_3D_Pro_CurvatureDrive);
+    m_IntakeSubsystem.setDefaultCommand(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem).withName("defaultStop"));
     TurnToHeading gyroPointRobotAtHub = new TurnToHeading(m_drivetrain, () -> {return lastHeadingWithVision.orElse(0);});
     ConditionalCommand gyroPointRobotAtHubIfHubAngleKnown = new ConditionalCommand(gyroPointRobotAtHub, new InstantCommand(() -> {}), () -> {return lastHeadingWithVision.isPresent();});
     //A.whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
