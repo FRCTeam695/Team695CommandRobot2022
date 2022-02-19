@@ -10,7 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
-  private final WPI_VictorSPX m_IntakeMotor = new WPI_VictorSPX(6);     
+  private final WPI_VictorSPX m_IntakeMotor = new WPI_VictorSPX(7);     
   public final static WPI_TalonFX m_IntakeLiftMotor = new WPI_TalonFX(2); 
 
   public IntakeSubsystem() {
