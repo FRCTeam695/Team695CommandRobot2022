@@ -322,9 +322,17 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
 
-    return new InstantCommand(()-> {m_drivetrain.resetOdometry(HubToMiddleLeftBlueCargoTrajectory.getInitialPose());})
-    .andThen(generateRamseteCommand(HubToMiddleLeftBlueCargoTrajectory))
-    .andThen(generateRamseteCommand(MiddleLeftBlueCargoToHubTrajectory))
+    return new InstantCommand(()-> {m_drivetrain.resetOdometry(HubToMiddleLeftBlueCargoTrajectory.getInitialPose());}, m_drivetrain)
+    .andThen
+      (
+        generateRamseteCommand(HubToMiddleLeftBlueCargoTrajectory)
+        .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(1);}, m_IntakeSubsystem))
+      )
+    .andThen
+      (
+        generateRamseteCommand(MiddleLeftBlueCargoToHubTrajectory)
+        .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem))
+      )
     .andThen(generateRamseteCommand(HubToBottomLeftBlueCargo1Trajectory))
     .andThen(generateRamseteCommand(HubToBottomLeftBlueCargo2Trajectory))
     .andThen(generateRamseteCommand(BottomLeftBlueCargoToHubTrajectory))
