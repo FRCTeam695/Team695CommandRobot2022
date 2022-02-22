@@ -252,6 +252,7 @@ public class RobotContainer {
     private final JoystickButton LeftStickButton8 = new JoystickButton(m_Extreme_3D_Pro_1,8);
     private final JoystickButton LeftStickButton9 = new JoystickButton(m_Extreme_3D_Pro_1,9);
     private final JoystickButton LeftStickButton3 = new JoystickButton(m_Extreme_3D_Pro_1,3);
+    private final JoystickButton LeftStickButton4 = new JoystickButton(m_Extreme_3D_Pro_1,4);
 
     private Trajectory HubToMiddleLeftBlueCargoTrajectory = importTrajectory("paths/output/HubToMiddleLeftBlueCargo.wpilib.json");
     private Trajectory MiddleLeftBlueCargoToHubTrajectory = importTrajectory("paths/output/MiddleLeftBlueCargoToHub.wpilib.json");
@@ -270,8 +271,8 @@ public class RobotContainer {
     //A.whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
     LeftStickButton1.whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
     LeftStickButton2.whileHeld(m_IntakeMotorRunCommand);
-    LeftStickButton8.whenPressed(new RaiseIntake(m_IntakeLiftSubsystem));
-    LeftStickButton9.whenPressed(new LowerIntake(m_IntakeLiftSubsystem));
+    LeftStickButton3.whenPressed(new RaiseIntake(m_IntakeLiftSubsystem));
+    LeftStickButton4.whenPressed(new LowerIntake(m_IntakeLiftSubsystem));
     //LeftStickButton3.whileHeld(testCurvatureDrive);
     configureButtonBindings();
   }
