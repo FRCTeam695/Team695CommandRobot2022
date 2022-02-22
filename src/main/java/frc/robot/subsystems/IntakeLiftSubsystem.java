@@ -14,7 +14,7 @@ public class IntakeLiftSubsystem extends SubsystemBase {
   /** Creates a new IntakeLiftSubsystem. */
   public final static WPI_TalonFX m_IntakeLiftMotor = new WPI_TalonFX(2);
 
-  private static final double ENCODER_POSITION_WHEN_UP = 58508;
+  private static final double ENCODER_POSITION_WHEN_UP = 32000; //58508
 
   public IntakeLiftSubsystem() {
     m_IntakeLiftMotor.setNeutralMode(NeutralMode.Brake);
