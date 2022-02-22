@@ -31,16 +31,16 @@ public class Constants {
         public static final int kRightMotor2Port = 14;
 
 
-        public static final double ksVolts = 0.59873;
-        public static final double kvVoltSecondsPerMeter = 1.9303;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.28111;
+        public static final double ksVolts = 0.66464;
+        public static final double kvVoltSecondsPerMeter = 2.3102;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.19084;
 
-        public static final double kPDriveVelMetersPerSec = 2.65;
+        public static final double kPDriveVelMetersPerSec = 1.8586;
 
-        public static final double kTrackwidthMeters = 0.68058;
+        public static final double kTrackwidthMeters = 0.63213;
         
         // 0.15 meters - diameter of the wheel; 2048 units per rotation - Talon FX; 8.45:1 Gearbox Ratio;
-        public static final double kMetersRobotTravelPerEncoderCount = .15 * 3.14 / (2048 * 8.45);   
+        public static final double kMetersRobotTravelPerEncoderCount = .15 * 3.14 / (2048 * 10.71);   
 
         // Meters of Robot Travel per second per encoder tick per 100 milliseconds; multiplied by 10 to convert to seconds.
         public static final double kMetersRobotTravelPerSecondPerTalonUnits = kMetersRobotTravelPerEncoderCount * 10; 
