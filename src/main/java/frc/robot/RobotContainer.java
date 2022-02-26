@@ -103,11 +103,16 @@ public class RobotContainer {
   private final DriveCommand m_F310_ArcadeDrive = new DriveCommand(m_drivetrain, m_LStickYAxis, m_RStickXAxis);
   private NetworkTable LimeLight;
 
-  private final Command m_IntakeMotorRunCommand = new RunCommand(
+  private final Command m_IntakeInward = new RunCommand(
      () -> {
-        m_IntakeSubsystem.setIntakeSpeed(
-          m_LeftStickTwistValue.getAsDouble()
-        );
+        m_IntakeSubsystem.setIntakeSpeed(1);
+        System.out.println(m_LeftStickTwistValue.getAsDouble());
+     },
+  m_IntakeSubsystem);
+
+  private final Command m_IntakeOutward = new RunCommand(
+     () -> {
+        m_IntakeSubsystem.setIntakeSpeed(-1);
         System.out.println(m_LeftStickTwistValue.getAsDouble());
      },
   m_IntakeSubsystem);
@@ -254,6 +259,10 @@ public class RobotContainer {
     private final JoystickButton LeftStickButton3 = new JoystickButton(m_Extreme_3D_Pro_1,3);
     private final JoystickButton LeftStickButton4 = new JoystickButton(m_Extreme_3D_Pro_1,4);
 
+    private final JoystickButton RightStickButton4 = new JoystickButton(m_Extreme_3D_Pro_2,4);
+    private final JoystickButton RightStickButton3 = new JoystickButton(m_Extreme_3D_Pro_2,3);
+    private final JoystickButton RightStickButton1 = new JoystickButton(m_Extreme_3D_Pro_2,1);
+    
     private Trajectory HubToMiddleLeftBlueCargoTrajectory = importTrajectory("paths/output/HubToMiddleLeftBlueCargo.wpilib.json");
     private Trajectory MiddleLeftBlueCargoToHubTrajectory = importTrajectory("paths/output/MiddleLeftBlueCargoToHub.wpilib.json");
     private Trajectory HubToBottomLeftBlueCargo1Trajectory = importTrajectory("paths/output/HubToBottomLeftBlueCargo1.wpilib.json");
@@ -270,7 +279,9 @@ public class RobotContainer {
     ConditionalCommand gyroPointRobotAtHubIfHubAngleKnown = new ConditionalCommand(gyroPointRobotAtHub, new InstantCommand(() -> {}), () -> {return lastHeadingWithVision.isPresent();});
     //A.whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
     LeftStickButton1.whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
-    LeftStickButton2.whileHeld(m_IntakeMotorRunCommand);
+    LeftStickButton2.whileHeld(m_IntakeInward);
+    RightStickButton1.whileHeld(m_IntakeInward);
+    RightStickButton4.whileHeld(m_IntakeOutward);
     LeftStickButton3.whenPressed(new RaiseIntake(m_IntakeLiftSubsystem));
     LeftStickButton4.whenPressed(new LowerIntake(m_IntakeLiftSubsystem));
     //LeftStickButton3.whileHeld(testCurvatureDrive);
