@@ -5,7 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -14,62 +13,27 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeLiftSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.Limelight;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.math.trajectory.constraint.*;
 
 import frc.robot.Constants.*;
 import frc.robot.commands.*;
-
-import static edu.wpi.first.wpilibj.XboxController.Button;
-
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
 
 import edu.wpi.first.math.*;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-/*import edu.wpi.first.math.controller.RamseteController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;*/
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
-import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.CommandBase.*;
-import edu.wpi.first.wpilibj2.command.RamseteCommand.*;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-/*import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.OIConstants;
-import frc.robot.subsystems.DriveSubsystem;*/
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.OptionalDouble;
 import java.util.function.DoubleSupplier;
 
@@ -88,7 +52,7 @@ public class RobotContainer {
   private final Joystick m_Extreme_3D_Pro_1 = new Joystick(2);
   private final Joystick m_Extreme_3D_Pro_2 = new Joystick(3);
   private final DoubleSupplier m_LStickYAxis = () -> (-m_Logitech_F310.getY()); //Java Lambda Expression; In a Logitech F310 pushing forward yields a negative value
-  //private final DoubleSupplier m_LStickXAxis = () -> (m_Logitech_F310.getX());
+  private final DoubleSupplier m_LStickXAxis = () -> (m_Logitech_F310.getX());
   private final DoubleSupplier m_RStickXAxis = () -> (m_Logitech_F310.getRawAxis(4));
 
   private final DoubleSupplier m_LeftStickYAxis = () -> (-applyDeadband(m_Extreme_3D_Pro_1.getRawAxis(1), Constants.OIConstants.kExtreme3DProDeadband));
@@ -119,33 +83,16 @@ public class RobotContainer {
      },
   m_IntakeSubsystem);
 
-
-  /*private final Command m_F310_CurvatureDrive = new RunCommand(
-      () -> {
-              m_drivetrain.curvatureDrive
-              (
-                m_LStickYAxis.getAsDouble(), 
-                m_RStickXAxis.getAsDouble()
-               );
-      },
-      m_drivetrain);*/
-
   private final Command m_Extreme_3D_Pro_CurvatureDrive = new RunCommand(
       () -> {
         double fwd = m_LeftStickYAxis.getAsDouble();
         double rot = m_RightStickXAxis.getAsDouble();
-        //double deadband = DifferentialDrive.kDefaultDeadband;
         double adjustedRot = rot;
         double deadband = 0.2;
-        //deadband = (deadband + 1)/2;
-        //System.out.println(deadband);
-
         boolean isQuickTurn =  fwd < deadband && fwd > -deadband;
         if (isQuickTurn){
           adjustedRot = rot * Math.abs(rot);
         }
-
-        //m_drive.curvatureDrive(fwd, adjustedRot, isQuickTurn);
     
         double xSpeed = MathUtil.clamp(fwd, -1.0, 1.0);
         double zRotation = MathUtil.clamp(adjustedRot, -1.0, 1.0);
@@ -172,36 +119,6 @@ public class RobotContainer {
           DriveConstants.kMaxDrivetrainVolts * rightSpeed);
       },
       m_drivetrain);
-    /*() -> {
-            m_drivetrain.curvatureDrive
-            (
-              m_LeftStickYAxis.getAsDouble(), 
-              m_RightStickXAxis.getAsDouble()
-              );
-    },
-    m_drivetrain);*/
-
-  private final Command tankDriveSame = new RunCommand(
-      () -> {m_drivetrain.tankDriveVolts(
-                DriveConstants.kMaxDrivetrainVolts * m_LStickYAxis.getAsDouble(),
-                DriveConstants.kMaxDrivetrainVolts * m_LStickYAxis.getAsDouble());},
-      m_drivetrain);
-
-      /*private final Command testCurvatureDrive = new RunCommand(
-        () -> {
-                m_drivetrain.curvatureDrive
-                (
-                  0.1, 
-                  0
-                  );
-        },
-        m_drivetrain);*/    
-
-  private final Command turnDrive = new RunCommand(
-    () -> {m_drivetrain.tankDriveVolts(
-                DriveConstants.kMaxDrivetrainVolts * m_RStickXAxis.getAsDouble(),
-                -DriveConstants.kMaxDrivetrainVolts * m_RStickXAxis.getAsDouble());},
-    m_drivetrain);
 
   private OptionalDouble lastHeadingWithVision = OptionalDouble.empty();
 
@@ -279,7 +196,6 @@ public class RobotContainer {
     m_IntakeLiftSubsystem.setDefaultCommand(new IntakeLiftStop(m_IntakeLiftSubsystem));
     TurnToHeading gyroPointRobotAtHub = new TurnToHeading(m_drivetrain, () -> {return lastHeadingWithVision.orElse(0);});
     ConditionalCommand gyroPointRobotAtHubIfHubAngleKnown = new ConditionalCommand(gyroPointRobotAtHub, new InstantCommand(() -> {}), () -> {return lastHeadingWithVision.isPresent();});
-    //A.whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
     LeftStickButton1.whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
     LeftStickButton2.whileHeld(m_IntakeInward);
     RightStickButton1.whileHeld(m_IntakeInward);
@@ -288,8 +204,6 @@ public class RobotContainer {
     LeftStickButton4.whenPressed(new LowerIntake(m_IntakeLiftSubsystem));
     LeftStickButton8.whenPressed(new EnableBrakeMode(m_drivetrain));
     LeftStickButton7.whenPressed(new EnableCoastMode(m_drivetrain));
-    //LeftStickButton3.whileHeld(testCurvatureDrive);
-    configureButtonBindings();
   }
 
   private Trajectory importTrajectory(String trajectoryPathString) {
@@ -306,14 +220,6 @@ public class RobotContainer {
    }
    return toReturn;
   }
-
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  private void configureButtonBindings() {}
 
   public Command getAcquireHeadingForTarget(){
     return acquireHeadingForTarget;
@@ -372,42 +278,10 @@ public class RobotContainer {
         m_drivetrain
     );
 
-    
-
     // Run path following command, then stop at the end.
   return ramseteCommand;
   }
 
-
-  //Limelight:
- 
- /* private NetworkTableEntry LimeLightAzimuth;
-  private NetworkTableEntry LimeLightCoPolar;
-  private NetworkTableEntry LimeLightContourArea;*/
-
-  public void printLimelightVars() {
-  //Limelight Code
-    
-      LimeLight = RobotMainNetworkTableInstance.getTable("limelight");
-      //this.LimeLightAzimuth = LimeLight.getEntry("tx");
-      //this.LimeLightCoPolar = LimeLight.getEntry("ty");
-      //this.LimeLightContourArea = LimeLight.getEntry("ta");
-
-    //System.out.printf("%.3f%n",LimeLight.getEntry("tx").getDouble(0));
-    //System.out.println(lastHeadingWithVision);
-
-    //System.out.print("");
-    //System.out.println(m_Logitech_F310.getRawAxis(4));
-
-
-/*
-    System.out.println(LimeLightCoPolar);
-    System.out.print("");
-
-    System.out.println(LimeLightContourArea);
-    System.out.print("");
-*/
-  }
   public static double applyDeadband(double value, double deadband) {
     if (Math.abs(value) > deadband) {
       if (value > 0.0) {

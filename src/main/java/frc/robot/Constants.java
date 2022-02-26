@@ -23,13 +23,11 @@ public class Constants {
 
         public static final double kMaxDrivetrainVolts = 11.0;
 
-
         public static final int kLeftMotor1Port = 11;
         public static final int kLeftMotor2Port = 12;
 
         public static final int kRightMotor1Port = 13;
         public static final int kRightMotor2Port = 14;
-
 
         public static final double ksVolts = 0.66464;
         public static final double kvVoltSecondsPerMeter = 2.3102;
@@ -47,7 +45,6 @@ public class Constants {
         
         public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(
                 kTrackwidthMeters);
-
     }
         public static final class OIConstants {
             public static final int kDriverControllerPort = 0;
@@ -62,5 +59,4 @@ public class Constants {
             public static final double kRamseteB = 2;
             public static final double kRamseteZeta = 0.7;
         }
-
 }

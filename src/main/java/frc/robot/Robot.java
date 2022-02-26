@@ -4,21 +4,9 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-
-import java.util.function.DoubleSupplier;
-
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import frc.robot.Constants;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.commands.DriveCommand;
-import frc.robot.subsystems.*;
-import frc.robot.subsystems.IntakeSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -28,8 +16,6 @@ import frc.robot.subsystems.IntakeSubsystem;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  private Command m_teleopCommand;
-
   private RobotContainer m_robotContainer;
 
   /**
@@ -97,9 +83,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    //m_teleopCommand = m_robotContainer. 
-    m_robotContainer.printLimelightVars();
-    //m_teleopCommand.schedule();
   }
 
   @Override

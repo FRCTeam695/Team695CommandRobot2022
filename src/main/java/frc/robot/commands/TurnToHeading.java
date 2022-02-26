@@ -21,7 +21,6 @@ public class TurnToHeading extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drivetrain = drivetrain;
     m_desiredHeading = desiredHeading;
-
     addRequirements(drivetrain);
   }
 
@@ -32,17 +31,11 @@ public class TurnToHeading extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    double halfwayPoint = 180.0;
     double desiredHeading = m_desiredHeading.getAsDouble();
     double adjustedDesiredHeading = desiredHeading;
     double currentHeading = m_drivetrain.getHeading();
     double differenceInHeading = currentHeading - desiredHeading;
     double adjustedDifferenceInHeading = differenceInHeading;
-
-    double circleValue = 360.0;
-
-    
 
     while (adjustedDifferenceInHeading < -180){
       adjustedDesiredHeading = adjustedDesiredHeading - 360;
@@ -68,8 +61,6 @@ public class TurnToHeading extends CommandBase {
     m_drivetrain.tankDriveVolts(
       -driveVolts,
       driveVolts);
-
-    //System.out.println("turning to: " + m_drivetrain.getHeading());
   }
 
   // Called once the command ends or is interrupted.
