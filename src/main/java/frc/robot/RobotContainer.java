@@ -30,6 +30,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import java.io.IOException;
@@ -135,8 +136,8 @@ public class RobotContainer {
     private final JoystickButton A = new JoystickButton(m_Logitech_F310,1);
     private final JoystickButton X = new JoystickButton(m_Logitech_F310,3);
 
-    private final JoystickButton[] LeftStickButtons = createStickButtons(m_Extreme_3D_Pro_Left);
-    private final JoystickButton[] RightStickButtons = createStickButtons(m_Extreme_3D_Pro_Right);
+    private final Button[] LeftStickButtons = createStickButtons(m_Extreme_3D_Pro_Left, 12);
+    private final Button[] RightStickButtons = createStickButtons(m_Extreme_3D_Pro_Right, 12);
 
     private Trajectory HubToMiddleLeftBlueCargoTrajectory = importTrajectory("paths/output/HubToMiddleLeftBlueCargo.wpilib.json");
     private Trajectory MiddleLeftBlueCargoToHubTrajectory = importTrajectory("paths/output/MiddleLeftBlueCargoToHub.wpilib.json");
@@ -162,11 +163,14 @@ public class RobotContainer {
     LeftStickButtons[7].whenPressed(new EnableCoastMode(m_drivetrain));
   }
 
-  private static JoystickButton[] createStickButtons(Joystick joystick) {
-    JoystickButton[] toReturn = new JoystickButton[joystick.getButtonCount() + 1];
-    for(int i = 1; i < toReturn.length; i++)
+  private static Button[] createStickButtons(Joystick joystick, int buttonCount) {
+    Button[] toReturn = new Button[buttonCount + 1];
+    int i;
+    for(i = 1; i < joystick.getButtonCount() + 1; i++)
       toReturn[i] = new JoystickButton(joystick, i);
 
+    for(; i < toReturn.length; i++)
+      toReturn[i] = new Button();
       return toReturn;
   }
 
