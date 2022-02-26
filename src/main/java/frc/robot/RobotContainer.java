@@ -49,18 +49,18 @@ public class RobotContainer {
   private final IntakeLiftSubsystem m_IntakeLiftSubsystem = new IntakeLiftSubsystem();
 
   private final Joystick m_Logitech_F310 = new Joystick(0);
-  private final Joystick m_Extreme_3D_Pro_1 = new Joystick(2);
-  private final Joystick m_Extreme_3D_Pro_2 = new Joystick(3);
-  private final DoubleSupplier m_LStickYAxis = () -> (-m_Logitech_F310.getY()); //Java Lambda Expression; In a Logitech F310 pushing forward yields a negative value
-  private final DoubleSupplier m_LStickXAxis = () -> (m_Logitech_F310.getX());
-  private final DoubleSupplier m_RStickXAxis = () -> (m_Logitech_F310.getRawAxis(4));
+  private final Joystick m_Extreme_3D_Pro_Left = new Joystick(2);
+  private final Joystick m_Extreme_3D_Pro_Right = new Joystick(3);
+  private final DoubleSupplier m_F310_LStickYAxis = () -> (-m_Logitech_F310.getY()); //Java Lambda Expression; In a Logitech F310 pushing forward yields a negative value
+  private final DoubleSupplier m_F310_LStickXAxis = () -> (m_Logitech_F310.getX());
+  private final DoubleSupplier m_F310_RStickXAxis = () -> (m_Logitech_F310.getRawAxis(4));
 
-  private final DoubleSupplier m_LeftStickYAxis = () -> (-applyDeadband(m_Extreme_3D_Pro_1.getRawAxis(1), Constants.OIConstants.kExtreme3DProDeadband));
-  private final DoubleSupplier m_LeftStickXAxis = () -> (applyDeadband(m_Extreme_3D_Pro_1.getRawAxis(0),  Constants.OIConstants.kExtreme3DProDeadband));
-  private final DoubleSupplier m_RightStickXAxis = () -> (applyDeadband(m_Extreme_3D_Pro_2.getRawAxis(0),  Constants.OIConstants.kExtreme3DProDeadband));
-  private final DoubleSupplier m_LeftStickSlider = () -> (m_Extreme_3D_Pro_1.getRawAxis(3));
+  private final DoubleSupplier m_LeftStickYAxis = () -> (-applyDeadband(m_Extreme_3D_Pro_Left.getRawAxis(1), Constants.OIConstants.kExtreme3DProDeadband));
+  private final DoubleSupplier m_LeftStickXAxis = () -> (applyDeadband(m_Extreme_3D_Pro_Left.getRawAxis(0),  Constants.OIConstants.kExtreme3DProDeadband));
+  private final DoubleSupplier m_RightStickXAxis = () -> (applyDeadband(m_Extreme_3D_Pro_Right.getRawAxis(0),  Constants.OIConstants.kExtreme3DProDeadband));
+  private final DoubleSupplier m_LeftStickSlider = () -> (m_Extreme_3D_Pro_Left.getRawAxis(3));
 
-  private final DoubleSupplier m_LeftStickTwistValue = () -> (m_Extreme_3D_Pro_1.getRawAxis(2));
+  private final DoubleSupplier m_LeftStickTwistValue = () -> (m_Extreme_3D_Pro_Left.getRawAxis(2));
 
   private final NetworkTableInstance RobotMainNetworkTableInstance = NetworkTableInstance.getDefault();
   private final DriveSubsystem m_drivetrain = new DriveSubsystem();
@@ -135,7 +135,6 @@ public class RobotContainer {
     }
   );
 
-
   private final Command aimDrivetrainAtHub = new RunCommand(
     () -> {
             double Kp = -0.015;         //-0.015 on concrete
@@ -171,16 +170,9 @@ public class RobotContainer {
     private final JoystickButton B = new JoystickButton(m_Logitech_F310,2);
     private final JoystickButton A = new JoystickButton(m_Logitech_F310,1);
     private final JoystickButton X = new JoystickButton(m_Logitech_F310,3);
-    private final JoystickButton LeftStickButton1 = new JoystickButton(m_Extreme_3D_Pro_1,1);
-    private final JoystickButton LeftStickButton2 = new JoystickButton(m_Extreme_3D_Pro_1,2);
-    private final JoystickButton LeftStickButton8 = new JoystickButton(m_Extreme_3D_Pro_1,8);
-    private final JoystickButton LeftStickButton7 = new JoystickButton(m_Extreme_3D_Pro_1,7);
-    private final JoystickButton LeftStickButton3 = new JoystickButton(m_Extreme_3D_Pro_1,3);
-    private final JoystickButton LeftStickButton4 = new JoystickButton(m_Extreme_3D_Pro_1,4);
 
-    private final JoystickButton RightStickButton4 = new JoystickButton(m_Extreme_3D_Pro_2,4);
-    private final JoystickButton RightStickButton3 = new JoystickButton(m_Extreme_3D_Pro_2,3);
-    private final JoystickButton RightStickButton1 = new JoystickButton(m_Extreme_3D_Pro_2,1);
+    private final JoystickButton[] LeftStickButtons = createStickButtons(m_Extreme_3D_Pro_Left);
+    private final JoystickButton[] RightStickButtons = createStickButtons(m_Extreme_3D_Pro_Right);
     
     private Trajectory HubToMiddleLeftBlueCargoTrajectory = importTrajectory("paths/output/HubToMiddleLeftBlueCargo.wpilib.json");
     private Trajectory MiddleLeftBlueCargoToHubTrajectory = importTrajectory("paths/output/MiddleLeftBlueCargoToHub.wpilib.json");
@@ -196,14 +188,22 @@ public class RobotContainer {
     m_IntakeLiftSubsystem.setDefaultCommand(new IntakeLiftStop(m_IntakeLiftSubsystem));
     TurnToHeading gyroPointRobotAtHub = new TurnToHeading(m_drivetrain, () -> {return lastHeadingWithVision.orElse(0);});
     ConditionalCommand gyroPointRobotAtHubIfHubAngleKnown = new ConditionalCommand(gyroPointRobotAtHub, new InstantCommand(() -> {}), () -> {return lastHeadingWithVision.isPresent();});
-    LeftStickButton1.whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
-    LeftStickButton2.whileHeld(m_IntakeInward);
-    RightStickButton1.whileHeld(m_IntakeInward);
-    RightStickButton4.whileHeld(m_IntakeOutward);
-    LeftStickButton3.whenPressed(new RaiseIntake(m_IntakeLiftSubsystem));
-    LeftStickButton4.whenPressed(new LowerIntake(m_IntakeLiftSubsystem));
-    LeftStickButton8.whenPressed(new EnableBrakeMode(m_drivetrain));
-    LeftStickButton7.whenPressed(new EnableCoastMode(m_drivetrain));
+    LeftStickButtons[1].whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
+    LeftStickButtons[2].whileHeld(m_IntakeInward);
+    RightStickButtons[1].whileHeld(m_IntakeInward);
+    RightStickButtons[4].whileHeld(m_IntakeOutward);
+    LeftStickButtons[3].whenPressed(new RaiseIntake(m_IntakeLiftSubsystem));
+    LeftStickButtons[4].whenPressed(new LowerIntake(m_IntakeLiftSubsystem));
+    LeftStickButtons[8].whenPressed(new EnableBrakeMode(m_drivetrain));
+    LeftStickButtons[7].whenPressed(new EnableCoastMode(m_drivetrain));
+  }
+
+  private static JoystickButton[] createStickButtons(Joystick joystick) {
+    JoystickButton[] toReturn = new JoystickButton[joystick.getButtonCount() + 1];
+    for(int i = 1; i < toReturn.length; i++)
+      toReturn[i] = new JoystickButton(joystick, i);
+
+      return toReturn;
   }
 
   private Trajectory importTrajectory(String trajectoryPathString) {
