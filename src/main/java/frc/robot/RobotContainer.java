@@ -66,7 +66,6 @@ public class RobotContainer {
   private final DriveSubsystem m_drivetrain = new DriveSubsystem();
   private final Limelight m_LimelightSubsystem = new Limelight(RobotMainNetworkTableInstance, 0);
 
-  private final DriveCommand m_F310_ArcadeDrive = new DriveCommand(m_drivetrain, m_LStickYAxis, m_RStickXAxis);
   private NetworkTable LimeLight;
 
   private final Command m_IntakeInward = new RunCommand(
@@ -83,42 +82,8 @@ public class RobotContainer {
      },
   m_IntakeSubsystem);
 
-  private final Command m_Extreme_3D_Pro_CurvatureDrive = new RunCommand(
-      () -> {
-        double fwd = m_LeftStickYAxis.getAsDouble();
-        double rot = m_RightStickXAxis.getAsDouble();
-        double adjustedRot = rot;
-        double deadband = 0.2;
-        boolean isQuickTurn =  fwd < deadband && fwd > -deadband;
-        if (isQuickTurn){
-          adjustedRot = rot * Math.abs(rot);
-        }
-    
-        double xSpeed = MathUtil.clamp(fwd, -1.0, 1.0);
-        double zRotation = MathUtil.clamp(adjustedRot, -1.0, 1.0);
-    
-        double leftSpeed;
-        double rightSpeed;
-    
-        if (isQuickTurn) {
-          leftSpeed = xSpeed + Math.pow(zRotation, 3);
-          rightSpeed = xSpeed - Math.pow(zRotation, 3);
-        } else {
-          leftSpeed = xSpeed + Math.abs(xSpeed) * Math.pow(zRotation, 3);
-          rightSpeed = xSpeed - Math.abs(xSpeed) * Math.pow(zRotation, 3);
-        }
-    
-        // Normalize wheel speeds
-        double maxMagnitude = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
-        if (maxMagnitude > 1.0) {
-          leftSpeed /= maxMagnitude;
-          rightSpeed /= maxMagnitude;
-        }
-        m_drivetrain.tankDriveVolts(
-          DriveConstants.kMaxDrivetrainVolts * leftSpeed,
-          DriveConstants.kMaxDrivetrainVolts * rightSpeed);
-      },
-      m_drivetrain);
+  private final Command m_Extreme_3D_Pro_CurvatureDrive = curvatureDrive(m_LeftStickYAxis, m_RightStickXAxis, m_drivetrain);
+  private final Command m_F310_CurvatureDrive = curvatureDrive(m_F310_LStickYAxis, m_F310_RStickXAxis, m_drivetrain);
 
   private OptionalDouble lastHeadingWithVision = OptionalDouble.empty();
 
@@ -173,7 +138,7 @@ public class RobotContainer {
 
     private final JoystickButton[] LeftStickButtons = createStickButtons(m_Extreme_3D_Pro_Left);
     private final JoystickButton[] RightStickButtons = createStickButtons(m_Extreme_3D_Pro_Right);
-    
+
     private Trajectory HubToMiddleLeftBlueCargoTrajectory = importTrajectory("paths/output/HubToMiddleLeftBlueCargo.wpilib.json");
     private Trajectory MiddleLeftBlueCargoToHubTrajectory = importTrajectory("paths/output/MiddleLeftBlueCargoToHub.wpilib.json");
     private Trajectory HubToBottomLeftBlueCargo1Trajectory = importTrajectory("paths/output/HubToBottomLeftBlueCargo1.wpilib.json");
@@ -292,6 +257,46 @@ public class RobotContainer {
     } else {
       return 0.0;
     }
+  }
+
+  public static Command curvatureDrive(DoubleSupplier forwardSupplier, DoubleSupplier rotationSupplier, DriveSubsystem driveSubsystem)
+  {
+    return new RunCommand(
+      () -> {
+        double fwd = forwardSupplier.getAsDouble();
+        double rot = rotationSupplier.getAsDouble();
+        double adjustedRot = rot;
+        double deadband = 0.2;
+        boolean isQuickTurn =  fwd < deadband && fwd > -deadband;
+        if (isQuickTurn){
+          adjustedRot = rot * Math.abs(rot);
+        }
+    
+        double xSpeed = MathUtil.clamp(fwd, -1.0, 1.0);
+        double zRotation = MathUtil.clamp(adjustedRot, -1.0, 1.0);
+    
+        double leftSpeed;
+        double rightSpeed;
+    
+        if (isQuickTurn) {
+          leftSpeed = xSpeed + Math.pow(zRotation, 3);
+          rightSpeed = xSpeed - Math.pow(zRotation, 3);
+        } else {
+          leftSpeed = xSpeed + Math.abs(xSpeed) * Math.pow(zRotation, 3);
+          rightSpeed = xSpeed - Math.abs(xSpeed) * Math.pow(zRotation, 3);
+        }
+    
+        // Normalize wheel speeds
+        double maxMagnitude = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
+        if (maxMagnitude > 1.0) {
+          leftSpeed /= maxMagnitude;
+          rightSpeed /= maxMagnitude;
+        }
+        driveSubsystem.tankDriveVolts(
+          DriveConstants.kMaxDrivetrainVolts * leftSpeed,
+          DriveConstants.kMaxDrivetrainVolts * rightSpeed);
+      },
+      driveSubsystem);
   }
 
 }
