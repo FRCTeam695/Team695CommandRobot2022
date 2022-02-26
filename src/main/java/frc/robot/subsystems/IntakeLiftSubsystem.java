@@ -12,12 +12,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeLiftSubsystem extends SubsystemBase {
   /** Creates a new IntakeLiftSubsystem. */
-  public final static WPI_TalonFX m_IntakeLiftMotor = new WPI_TalonFX(2);
+  private final WPI_TalonFX m_IntakeLiftMotor = new WPI_TalonFX(2);
 
-  private static final double ENCODER_POSITION_WHEN_UP = 32000; //58508
+  private static final double ENCODER_POSITION_WHEN_UP = 51000; //58508     //32000
 
   public IntakeLiftSubsystem() {
     m_IntakeLiftMotor.setNeutralMode(NeutralMode.Brake);
+    setIntakeLiftPositionToZero();
   }
   //0 is stopped
   //0 to 1 is upward
