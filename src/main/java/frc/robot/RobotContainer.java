@@ -147,11 +147,11 @@ public class RobotContainer {
         double rightSpeed;
     
         if (isQuickTurn) {
-          leftSpeed = xSpeed + zRotation;
-          rightSpeed = xSpeed - zRotation;
+          leftSpeed = xSpeed + Math.pow(zRotation, 3);
+          rightSpeed = xSpeed - Math.pow(zRotation, 3);
         } else {
-          leftSpeed = xSpeed + Math.abs(xSpeed) * zRotation;
-          rightSpeed = xSpeed - Math.abs(xSpeed) * zRotation;
+          leftSpeed = xSpeed + Math.abs(xSpeed) * Math.pow(zRotation, 3);
+          rightSpeed = xSpeed - Math.abs(xSpeed) * Math.pow(zRotation, 3);
         }
     
         // Normalize wheel speeds
