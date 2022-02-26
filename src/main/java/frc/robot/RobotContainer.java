@@ -66,7 +66,7 @@ public class RobotContainer {
   private final DriveSubsystem m_drivetrain = new DriveSubsystem();
   private final Limelight m_LimelightSubsystem = new Limelight(RobotMainNetworkTableInstance, 0);
 
-  private NetworkTable LimeLight;
+  private final NetworkTable LimeLight = RobotMainNetworkTableInstance.getTable("limelight");
 
   private final Command m_IntakeInward = new RunCommand(
      () -> {
@@ -105,7 +105,6 @@ public class RobotContainer {
             double Kp = -0.015;         //-0.015 on concrete
             double min_command = 0.075; //0.075 on concrete
 
-            LimeLight = RobotMainNetworkTableInstance.getTable("limelight");
 
             double forwardValue = (0.25)*applyDeadband( m_LeftStickYAxis.getAsDouble(),.1);
             double steering_adjust = 0;
