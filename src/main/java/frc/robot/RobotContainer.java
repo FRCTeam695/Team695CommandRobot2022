@@ -35,6 +35,8 @@ import frc.robot.Constants.*;
 import frc.robot.commands.*;
 
 import static edu.wpi.first.wpilibj.XboxController.Button;
+
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 
@@ -255,7 +257,7 @@ public class RobotContainer {
     private final JoystickButton LeftStickButton1 = new JoystickButton(m_Extreme_3D_Pro_1,1);
     private final JoystickButton LeftStickButton2 = new JoystickButton(m_Extreme_3D_Pro_1,2);
     private final JoystickButton LeftStickButton8 = new JoystickButton(m_Extreme_3D_Pro_1,8);
-    private final JoystickButton LeftStickButton9 = new JoystickButton(m_Extreme_3D_Pro_1,9);
+    private final JoystickButton LeftStickButton7 = new JoystickButton(m_Extreme_3D_Pro_1,7);
     private final JoystickButton LeftStickButton3 = new JoystickButton(m_Extreme_3D_Pro_1,3);
     private final JoystickButton LeftStickButton4 = new JoystickButton(m_Extreme_3D_Pro_1,4);
 
@@ -284,6 +286,8 @@ public class RobotContainer {
     RightStickButton4.whileHeld(m_IntakeOutward);
     LeftStickButton3.whenPressed(new RaiseIntake(m_IntakeLiftSubsystem));
     LeftStickButton4.whenPressed(new LowerIntake(m_IntakeLiftSubsystem));
+    LeftStickButton8.whenPressed(new EnableBrakeMode(m_drivetrain));
+    LeftStickButton7.whenPressed(new EnableCoastMode(m_drivetrain));
     //LeftStickButton3.whileHeld(testCurvatureDrive);
     configureButtonBindings();
   }

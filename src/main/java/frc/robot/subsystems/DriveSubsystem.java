@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
@@ -59,6 +60,7 @@ public class DriveSubsystem extends SubsystemBase {
     // Sets the distance per pulse for the encoders
 //    m_leftEncoder.setDistancePerPulse(.15*3.14/(2048*8));
 //    m_rightEncoder.setDistancePerPulse(.15*3.14/(2048*8));
+    setNeutralMode(NeutralMode.Brake);
     m_leftMotors = new MotorControllerGroup(m_leftmotor1, m_leftmotor2);
     m_rightMotors = new MotorControllerGroup(m_rightmotor1, m_rightmotor2);
     m_rightMotors.setInverted(true);
@@ -71,6 +73,13 @@ public class DriveSubsystem extends SubsystemBase {
 
     m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
 
+  }
+
+  public void setNeutralMode(NeutralMode neutralMode) {
+    m_leftmotor1.setNeutralMode(neutralMode);
+    m_leftmotor2.setNeutralMode(neutralMode);
+    m_rightmotor1.setNeutralMode(neutralMode);
+    m_rightmotor2.setNeutralMode(neutralMode);
   }
 
     @Override
