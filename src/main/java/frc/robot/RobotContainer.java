@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 
 import frc.robot.Constants.*;
 import frc.robot.commands.*;
-
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.*;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
@@ -165,6 +165,7 @@ public class RobotContainer {
     LeftStickButtons[4].whenPressed(new LowerIntakeToBottom(m_IntakeLiftSubsystem));
     LeftStickButtons[8].whenPressed(new EnableBrakeMode(m_drivetrain));
     LeftStickButtons[7].whenPressed(new EnableCoastMode(m_drivetrain));
+    CameraServer.startAutomaticCapture();
   }
 
   private static Button[] createStickButtons(Joystick joystick, int buttonCount) {
