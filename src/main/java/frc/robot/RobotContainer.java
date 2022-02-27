@@ -154,7 +154,8 @@ public class RobotContainer {
     TurnToHeading gyroPointRobotAtHub = new TurnToHeading(m_drivetrain, () -> {return lastHeadingWithVision.orElse(0);});
     ConditionalCommand gyroPointRobotAtHubIfHubAngleKnown = new ConditionalCommand(gyroPointRobotAtHub, new InstantCommand(() -> {}), () -> {return lastHeadingWithVision.isPresent();});
     LeftStickButtons[1].whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
-    LeftStickButtons[2].whileHeld(m_IntakeInward);
+    LeftStickButtons[2].whenPressed(new TurnRelativeToHeading(m_drivetrain, 45).withTimeout(1));
+    RightStickButtons[2].whenPressed(new TurnRelativeToHeading(m_drivetrain, -45).withTimeout(1));
     RightStickButtons[1].whileHeld(m_IntakeInward);
     RightStickButtons[4].whileHeld(m_IntakeOutward);
     RightStickButtons[9].whileHeld(new RunCommand(()->{m_IntakeLiftSubsystem.setArmPercent(-0.15);}, m_IntakeLiftSubsystem));
