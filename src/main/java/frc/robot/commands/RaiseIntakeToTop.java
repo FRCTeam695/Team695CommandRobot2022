@@ -7,11 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeLiftSubsystem;
 
-public class RaiseIntake extends CommandBase {
+public class RaiseIntakeToTop extends CommandBase {
 
   private final IntakeLiftSubsystem m_IntakeLiftSubsystem;
 
-  public RaiseIntake(IntakeLiftSubsystem intakeLift) {
+  public RaiseIntakeToTop(IntakeLiftSubsystem intakeLift) {
 
     m_IntakeLiftSubsystem = intakeLift;
     addRequirements(m_IntakeLiftSubsystem);

@@ -17,7 +17,8 @@ public class IntakeLiftSubsystem extends SubsystemBase {
   private static final double ENCODER_POSITION_WHEN_UP = 51000; //Empirically Determined
   public IntakeLiftSubsystem() {
     m_IntakeLiftMotor.setNeutralMode(NeutralMode.Brake);
-    setIntakeLiftPositionToZero();
+    resetIntakeLiftPositionToUp();
+    SmartDashboard.putData(this);
   }
   //0 is stopped
   //0 to 1 is upward
@@ -31,9 +32,14 @@ public class IntakeLiftSubsystem extends SubsystemBase {
     return m_IntakeLiftMotor.getSelectedSensorPosition() / ENCODER_POSITION_WHEN_UP;
   }
 
-  public void setIntakeLiftPositionToZero () {
+  public void resetIntakeLiftPositionToUp () {
     m_IntakeLiftMotor.setSelectedSensorPosition(ENCODER_POSITION_WHEN_UP);
   }
+
+  public void resetIntakeLiftPositionToDown () {
+    m_IntakeLiftMotor.setSelectedSensorPosition(0);
+  }
+
 
   @Override
   public void periodic() {

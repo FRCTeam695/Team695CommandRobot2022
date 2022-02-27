@@ -157,8 +157,12 @@ public class RobotContainer {
     LeftStickButtons[2].whileHeld(m_IntakeInward);
     RightStickButtons[1].whileHeld(m_IntakeInward);
     RightStickButtons[4].whileHeld(m_IntakeOutward);
-    LeftStickButtons[3].whenPressed(new RaiseIntake(m_IntakeLiftSubsystem));
-    LeftStickButtons[4].whenPressed(new LowerIntake(m_IntakeLiftSubsystem));
+    RightStickButtons[9].whileHeld(new RunCommand(()->{m_IntakeLiftSubsystem.setArmPercent(-0.15);}, m_IntakeLiftSubsystem));
+    RightStickButtons[10].whileHeld(new RunCommand(()->{m_IntakeLiftSubsystem.setArmPercent(0.15);}, m_IntakeLiftSubsystem));
+    RightStickButtons[11].whenPressed(new InstantCommand(()-> {m_IntakeLiftSubsystem.resetIntakeLiftPositionToDown();}, m_IntakeLiftSubsystem));
+    RightStickButtons[12].whenPressed(new InstantCommand(()-> {m_IntakeLiftSubsystem.resetIntakeLiftPositionToUp();}, m_IntakeLiftSubsystem));
+    LeftStickButtons[3].whenPressed(new RaiseIntakeToTop(m_IntakeLiftSubsystem));
+    LeftStickButtons[4].whenPressed(new LowerIntakeToBottom(m_IntakeLiftSubsystem));
     LeftStickButtons[8].whenPressed(new EnableBrakeMode(m_drivetrain));
     LeftStickButtons[7].whenPressed(new EnableCoastMode(m_drivetrain));
   }
@@ -205,26 +209,26 @@ public class RobotContainer {
       (
         generateRamseteCommand(HubToMiddleLeftBlueCargoTrajectory)
         .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(1);}, m_IntakeSubsystem))
-        .alongWith(new LowerIntake(m_IntakeLiftSubsystem))
+        .alongWith(new LowerIntakeToBottom(m_IntakeLiftSubsystem))
       )
     .andThen
       (
         generateRamseteCommand(MiddleLeftBlueCargoToHubTrajectory)
         .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem))
-        .alongWith(new RaiseIntake(m_IntakeLiftSubsystem))
+        .alongWith(new RaiseIntakeToTop(m_IntakeLiftSubsystem))
       )
     .andThen
       (
         generateRamseteCommand(HubToBottomLeftBlueCargo1Trajectory)
         .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(1);}, m_IntakeSubsystem))
-        .alongWith(new LowerIntake(m_IntakeLiftSubsystem))
+        .alongWith(new LowerIntakeToBottom(m_IntakeLiftSubsystem))
       )
     .andThen(generateRamseteCommand(HubToBottomLeftBlueCargo2Trajectory))
     .andThen
       (
         generateRamseteCommand(BottomLeftBlueCargoToHubTrajectory)
         .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem))
-        .alongWith(new RaiseIntake(m_IntakeLiftSubsystem))
+        .alongWith(new RaiseIntakeToTop(m_IntakeLiftSubsystem))
       )
     .andThen(() -> m_drivetrain.tankDriveVolts(0, 0));
   }
