@@ -46,6 +46,7 @@ import java.util.function.DoubleSupplier;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  private final DriveSubsystem m_drivetrain = new DriveSubsystem();
   private final IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
   private final IntakeLiftSubsystem m_IntakeLiftSubsystem = new IntakeLiftSubsystem();
 
@@ -64,7 +65,6 @@ public class RobotContainer {
   private final DoubleSupplier m_LeftStickTwistValue = () -> (m_Extreme_3D_Pro_Left.getRawAxis(2));
 
   private final NetworkTableInstance RobotMainNetworkTableInstance = NetworkTableInstance.getDefault();
-  private final DriveSubsystem m_drivetrain = new DriveSubsystem();
   private final Limelight m_LimelightSubsystem = new Limelight(RobotMainNetworkTableInstance, 0);
 
   private final NetworkTable LimeLight = RobotMainNetworkTableInstance.getTable("limelight");
