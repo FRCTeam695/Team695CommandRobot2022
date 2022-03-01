@@ -135,6 +135,7 @@ public class RobotContainer {
     private final JoystickButton B = new JoystickButton(m_Logitech_F310,2);
     private final JoystickButton A = new JoystickButton(m_Logitech_F310,1);
     private final JoystickButton X = new JoystickButton(m_Logitech_F310,3);
+    private final JoystickButton Y = new JoystickButton(m_Logitech_F310,4);
 
     private final Button[] LeftStickButtons = createStickButtons(m_Extreme_3D_Pro_Left, 12);
     private final Button[] RightStickButtons = createStickButtons(m_Extreme_3D_Pro_Right, 12);
