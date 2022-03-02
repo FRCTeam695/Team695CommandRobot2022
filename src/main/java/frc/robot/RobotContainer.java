@@ -10,6 +10,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeLiftSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -49,6 +50,7 @@ public class RobotContainer {
   private final DriveSubsystem m_drivetrain = new DriveSubsystem();
   private final IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
   private final IntakeLiftSubsystem m_IntakeLiftSubsystem = new IntakeLiftSubsystem();
+  private final ClimberSubsystem m_ClimberSubsystem = new ClimberSubsystem();
 
   private final Joystick m_Logitech_F310 = new Joystick(0);
   private final Joystick m_Extreme_3D_Pro_Left = new Joystick(2);
@@ -152,6 +154,7 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(m_Extreme_3D_Pro_CurvatureDrive);
     m_IntakeSubsystem.setDefaultCommand(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem).withName("defaultStop"));
     m_IntakeLiftSubsystem.setDefaultCommand(new IntakeLiftStop(m_IntakeLiftSubsystem));
+    m_ClimberSubsystem.setDefaultCommand(new RunCommand(()-> {m_ClimberSubsystem.turnClimberOff();}, m_ClimberSubsystem));
     TurnToHeading gyroPointRobotAtHub = new TurnToHeading(m_drivetrain, () -> {return lastHeadingWithVision.orElse(0);});
     ConditionalCommand gyroPointRobotAtHubIfHubAngleKnown = new ConditionalCommand(gyroPointRobotAtHub, new InstantCommand(() -> {}), () -> {return lastHeadingWithVision.isPresent();});
     LeftStickButtons[1].whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
@@ -167,6 +170,12 @@ public class RobotContainer {
     LeftStickButtons[4].whenPressed(new LowerIntakeToBottom(m_IntakeLiftSubsystem));
     LeftStickButtons[8].whenPressed(new EnableBrakeMode(m_drivetrain));
     LeftStickButtons[7].whenPressed(new EnableCoastMode(m_drivetrain));
+    
+    B.whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber1Percentage(-0.5);},m_ClimberSubsystem));
+    A.whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber1Percentage(0.5);},m_ClimberSubsystem));
+    
+    Y.whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber2Percentage(-0.5);},m_ClimberSubsystem));
+    X.whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber2Percentage(0.5);},m_ClimberSubsystem));
     CameraServer.startAutomaticCapture();
   }
 
