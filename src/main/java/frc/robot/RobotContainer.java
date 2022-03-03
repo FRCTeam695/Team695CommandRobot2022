@@ -74,14 +74,12 @@ public class RobotContainer {
   private final Command m_IntakeInward = new RunCommand(
      () -> {
         m_IntakeSubsystem.setIntakeSpeed(1);
-        System.out.println(m_LeftStickTwistValue.getAsDouble());
      },
   m_IntakeSubsystem);
 
   private final Command m_IntakeOutward = new RunCommand(
      () -> {
         m_IntakeSubsystem.setIntakeSpeed(-1);
-        System.out.println(m_LeftStickTwistValue.getAsDouble());
      },
   m_IntakeSubsystem);
 
