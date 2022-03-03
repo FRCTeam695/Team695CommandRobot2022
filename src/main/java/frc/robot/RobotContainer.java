@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -78,12 +75,6 @@ public class RobotContainer {
   private final Command m_Extreme_3D_Pro_CurvatureDrive = curvatureDrive(m_LeftStickYAxis, m_RightStickXAxis, m_drivetrain);
 
 
-  private final NetworkTableInstance RobotMainNetworkTableInstance = NetworkTableInstance.getDefault();
-  private final Limelight m_LimelightSubsystem = new Limelight(RobotMainNetworkTableInstance, 0);
-  private final NetworkTable LimeLight = RobotMainNetworkTableInstance.getTable("limelight");
-  private OptionalDouble lastHeadingWithVision = OptionalDouble.empty();
-
-
   private Trajectory HubToMiddleLeftBlueCargoTrajectory = importTrajectory("paths/output/HubToMiddleLeftBlueCargo.wpilib.json");
   private Trajectory MiddleLeftBlueCargoToHubTrajectory = importTrajectory("paths/output/MiddleLeftBlueCargoToHub.wpilib.json");
   private Trajectory HubToBottomLeftBlueCargo1Trajectory = importTrajectory("paths/output/HubToBottomLeftBlueCargo1.wpilib.json");
@@ -102,51 +93,6 @@ public class RobotContainer {
         m_IntakeSubsystem.setIntakeSpeed(-1);
      },
   m_IntakeSubsystem);
-  
-
-  public boolean targetInView() {
-    return LimeLight.getEntry("tv").getNumber(0).intValue() == 1;
-  }
-
-  private final Command acquireHeadingForTarget = new RunCommand(
-    () -> {
-          if (targetInView()){
-            double tx = LimeLight.getEntry("tx").getDouble(0);
-            lastHeadingWithVision = OptionalDouble.of(m_drivetrain.getHeading()-tx);
-          }
-    }
-  );
-
-  private final Command aimDrivetrainAtHub = new RunCommand(
-    () -> {
-            double Kp = -0.015;         //-0.015 on concrete
-            double min_command = 0.075; //0.075 on concrete
-
-
-            double forwardValue = (0.25)*applyDeadband( m_LeftStickYAxis.getAsDouble(),.1);
-            double steering_adjust = 0;
-
-            if (targetInView()){
-                double tx = LimeLight.getEntry("tx").getDouble(0);
-                double adjustedMinCommand = Math.max(min_command - Math.abs(forwardValue), 0);
-                double heading_error = -tx;
-                steering_adjust = Kp * tx;
-
-                if (heading_error > 0){
-                  steering_adjust = Kp * heading_error - adjustedMinCommand;
-                }
-                else if (heading_error < 0){
-                  steering_adjust = Kp * heading_error + adjustedMinCommand;
-                }
-                
-              }
-                double left_command = steering_adjust + forwardValue;
-                double right_command = -steering_adjust + forwardValue;
-                m_drivetrain.tankDriveVolts(
-                  DriveConstants.kMaxDrivetrainVolts * left_command,
-                  DriveConstants.kMaxDrivetrainVolts * right_command);
-    },
-    m_drivetrain);
 
     
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -157,11 +103,7 @@ public class RobotContainer {
     m_IntakeLiftSubsystem.setDefaultCommand(new IntakeLiftStop(m_IntakeLiftSubsystem));
     m_ClimberSubsystem.setDefaultCommand(new RunCommand(()-> {m_ClimberSubsystem.turnClimberOff();}, m_ClimberSubsystem));
 
-    TurnToHeading gyroPointRobotAtHub = new TurnToHeading(m_drivetrain, () -> {return lastHeadingWithVision.orElse(0);});
-    ConditionalCommand gyroPointRobotAtHubIfHubAngleKnown = new ConditionalCommand(gyroPointRobotAtHub, new InstantCommand(() -> {}), () -> {return lastHeadingWithVision.isPresent();});
-    
-    LeftStickButtons[1].whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
-   
+
     LeftStickButtons[2].whenPressed(new TurnRelativeToHeading(m_drivetrain, 45).withTimeout(1));
     RightStickButtons[2].whenPressed(new TurnRelativeToHeading(m_drivetrain, -45).withTimeout(1));
 
@@ -215,9 +157,6 @@ public class RobotContainer {
    return toReturn;
   }
 
-  public Command getAcquireHeadingForTarget(){
-    return acquireHeadingForTarget;
-  }
 
    /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
