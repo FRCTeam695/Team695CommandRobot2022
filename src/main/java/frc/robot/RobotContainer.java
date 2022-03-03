@@ -52,24 +52,44 @@ public class RobotContainer {
   private final IntakeLiftSubsystem m_IntakeLiftSubsystem = new IntakeLiftSubsystem();
   private final ClimberSubsystem m_ClimberSubsystem = new ClimberSubsystem();
 
+
   private final Joystick m_Logitech_F310 = new Joystick(0);
-  private final Joystick m_Extreme_3D_Pro_Left = new Joystick(2);
-  private final Joystick m_Extreme_3D_Pro_Right = new Joystick(3);
   private final DoubleSupplier m_F310_LStickYAxis = () -> (-m_Logitech_F310.getY()); //Java Lambda Expression; In a Logitech F310 pushing forward yields a negative value
   private final DoubleSupplier m_F310_LStickXAxis = () -> (m_Logitech_F310.getX());
   private final DoubleSupplier m_F310_RStickXAxis = () -> (m_Logitech_F310.getRawAxis(4));
+  private final JoystickButton B = new JoystickButton(m_Logitech_F310,2);
+  private final JoystickButton A = new JoystickButton(m_Logitech_F310,1);
+  private final JoystickButton X = new JoystickButton(m_Logitech_F310,3);
+  private final JoystickButton Y = new JoystickButton(m_Logitech_F310,4);
+  private final Command m_F310_CurvatureDrive = curvatureDrive(m_F310_LStickYAxis, m_F310_RStickXAxis, m_drivetrain);
 
+
+  private final Joystick m_Extreme_3D_Pro_Left = new Joystick(2);
   private final DoubleSupplier m_LeftStickYAxis = () -> (-applyDeadband(m_Extreme_3D_Pro_Left.getRawAxis(1), Constants.OIConstants.kExtreme3DProDeadband));
   private final DoubleSupplier m_LeftStickXAxis = () -> (applyDeadband(m_Extreme_3D_Pro_Left.getRawAxis(0),  Constants.OIConstants.kExtreme3DProDeadband));
-  private final DoubleSupplier m_RightStickXAxis = () -> (applyDeadband(m_Extreme_3D_Pro_Right.getRawAxis(0),  Constants.OIConstants.kExtreme3DProDeadband));
   private final DoubleSupplier m_LeftStickSlider = () -> (m_Extreme_3D_Pro_Left.getRawAxis(3));
-
   private final DoubleSupplier m_LeftStickTwistValue = () -> (m_Extreme_3D_Pro_Left.getRawAxis(2));
+  private final Button[] LeftStickButtons = createStickButtons(m_Extreme_3D_Pro_Left, 12);
+
+  private final Joystick m_Extreme_3D_Pro_Right = new Joystick(3);
+  private final DoubleSupplier m_RightStickXAxis = () -> (applyDeadband(m_Extreme_3D_Pro_Right.getRawAxis(0),  Constants.OIConstants.kExtreme3DProDeadband));
+  private final Button[] RightStickButtons = createStickButtons(m_Extreme_3D_Pro_Right, 12);  
+
+  private final Command m_Extreme_3D_Pro_CurvatureDrive = curvatureDrive(m_LeftStickYAxis, m_RightStickXAxis, m_drivetrain);
+
 
   private final NetworkTableInstance RobotMainNetworkTableInstance = NetworkTableInstance.getDefault();
   private final Limelight m_LimelightSubsystem = new Limelight(RobotMainNetworkTableInstance, 0);
-
   private final NetworkTable LimeLight = RobotMainNetworkTableInstance.getTable("limelight");
+  private OptionalDouble lastHeadingWithVision = OptionalDouble.empty();
+
+
+  private Trajectory HubToMiddleLeftBlueCargoTrajectory = importTrajectory("paths/output/HubToMiddleLeftBlueCargo.wpilib.json");
+  private Trajectory MiddleLeftBlueCargoToHubTrajectory = importTrajectory("paths/output/MiddleLeftBlueCargoToHub.wpilib.json");
+  private Trajectory HubToBottomLeftBlueCargo1Trajectory = importTrajectory("paths/output/HubToBottomLeftBlueCargo1.wpilib.json");
+  private Trajectory HubToBottomLeftBlueCargo2Trajectory = importTrajectory("paths/output/HubToBottomLeftBlueCargo2.wpilib.json");
+  private Trajectory BottomLeftBlueCargoToHubTrajectory = importTrajectory("paths/output/BottomLeftBlueCargoToHub.wpilib.json");
+
 
   private final Command m_IntakeInward = new RunCommand(
      () -> {
@@ -82,11 +102,7 @@ public class RobotContainer {
         m_IntakeSubsystem.setIntakeSpeed(-1);
      },
   m_IntakeSubsystem);
-
-  private final Command m_Extreme_3D_Pro_CurvatureDrive = curvatureDrive(m_LeftStickYAxis, m_RightStickXAxis, m_drivetrain);
-  private final Command m_F310_CurvatureDrive = curvatureDrive(m_F310_LStickYAxis, m_F310_RStickXAxis, m_drivetrain);
-
-  private OptionalDouble lastHeadingWithVision = OptionalDouble.empty();
+  
 
   public boolean targetInView() {
     return LimeLight.getEntry("tv").getNumber(0).intValue() == 1;
@@ -132,19 +148,6 @@ public class RobotContainer {
     },
     m_drivetrain);
 
-    private final JoystickButton B = new JoystickButton(m_Logitech_F310,2);
-    private final JoystickButton A = new JoystickButton(m_Logitech_F310,1);
-    private final JoystickButton X = new JoystickButton(m_Logitech_F310,3);
-    private final JoystickButton Y = new JoystickButton(m_Logitech_F310,4);
-
-    private final Button[] LeftStickButtons = createStickButtons(m_Extreme_3D_Pro_Left, 12);
-    private final Button[] RightStickButtons = createStickButtons(m_Extreme_3D_Pro_Right, 12);
-
-    private Trajectory HubToMiddleLeftBlueCargoTrajectory = importTrajectory("paths/output/HubToMiddleLeftBlueCargo.wpilib.json");
-    private Trajectory MiddleLeftBlueCargoToHubTrajectory = importTrajectory("paths/output/MiddleLeftBlueCargoToHub.wpilib.json");
-    private Trajectory HubToBottomLeftBlueCargo1Trajectory = importTrajectory("paths/output/HubToBottomLeftBlueCargo1.wpilib.json");
-    private Trajectory HubToBottomLeftBlueCargo2Trajectory = importTrajectory("paths/output/HubToBottomLeftBlueCargo2.wpilib.json");
-    private Trajectory BottomLeftBlueCargoToHubTrajectory = importTrajectory("paths/output/BottomLeftBlueCargoToHub.wpilib.json");
     
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -153,19 +156,27 @@ public class RobotContainer {
     m_IntakeSubsystem.setDefaultCommand(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem).withName("defaultStop"));
     m_IntakeLiftSubsystem.setDefaultCommand(new IntakeLiftStop(m_IntakeLiftSubsystem));
     m_ClimberSubsystem.setDefaultCommand(new RunCommand(()-> {m_ClimberSubsystem.turnClimberOff();}, m_ClimberSubsystem));
+
     TurnToHeading gyroPointRobotAtHub = new TurnToHeading(m_drivetrain, () -> {return lastHeadingWithVision.orElse(0);});
     ConditionalCommand gyroPointRobotAtHubIfHubAngleKnown = new ConditionalCommand(gyroPointRobotAtHub, new InstantCommand(() -> {}), () -> {return lastHeadingWithVision.isPresent();});
+    
     LeftStickButtons[1].whileHeld(new ConditionalCommand(aimDrivetrainAtHub, gyroPointRobotAtHubIfHubAngleKnown, () -> {return targetInView();}));
+   
     LeftStickButtons[2].whenPressed(new TurnRelativeToHeading(m_drivetrain, 45).withTimeout(1));
     RightStickButtons[2].whenPressed(new TurnRelativeToHeading(m_drivetrain, -45).withTimeout(1));
+
     RightStickButtons[1].whileHeld(m_IntakeInward);
     RightStickButtons[4].whileHeld(m_IntakeOutward);
+
     RightStickButtons[9].whileHeld(new RunCommand(()->{m_IntakeLiftSubsystem.setArmPercent(-0.15);}, m_IntakeLiftSubsystem));
     RightStickButtons[10].whileHeld(new RunCommand(()->{m_IntakeLiftSubsystem.setArmPercent(0.15);}, m_IntakeLiftSubsystem));
+    
     RightStickButtons[11].whenPressed(new InstantCommand(()-> {m_IntakeLiftSubsystem.resetIntakeLiftPositionToDown();}, m_IntakeLiftSubsystem));
     RightStickButtons[12].whenPressed(new InstantCommand(()-> {m_IntakeLiftSubsystem.resetIntakeLiftPositionToUp();}, m_IntakeLiftSubsystem));
+    
     LeftStickButtons[3].whenPressed(new RaiseIntakeToTop(m_IntakeLiftSubsystem));
     LeftStickButtons[4].whenPressed(new LowerIntakeToBottom(m_IntakeLiftSubsystem));
+
     LeftStickButtons[8].whenPressed(new EnableBrakeMode(m_drivetrain));
     LeftStickButtons[7].whenPressed(new EnableCoastMode(m_drivetrain));
     
@@ -176,6 +187,7 @@ public class RobotContainer {
     X.whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber2Percentage(0.5);},m_ClimberSubsystem));
     CameraServer.startAutomaticCapture();
   }
+
 
   private static Button[] createStickButtons(Joystick joystick, int buttonCount) {
     Button[] toReturn = new Button[buttonCount + 1];
@@ -316,5 +328,4 @@ public class RobotContainer {
       },
       driveSubsystem);
   }
-
 }
