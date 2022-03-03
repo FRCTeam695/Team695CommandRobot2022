@@ -9,7 +9,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -32,10 +31,6 @@ public class DriveSubsystem extends SubsystemBase {
   // The motors on the right side of the drive.
   private final MotorControllerGroup m_rightMotors;
 
-
-  // The robot's drive
-  private final DifferentialDrive m_drive;
-
   // The gyro sensor
   private final Gyro m_gyro = new ADXRS450_Gyro();
 
@@ -48,8 +43,6 @@ public class DriveSubsystem extends SubsystemBase {
     m_leftMotors = new MotorControllerGroup(m_leftmotor1, m_leftmotor2);
     m_rightMotors = new MotorControllerGroup(m_rightmotor1, m_rightmotor2);
     m_rightMotors.setInverted(true);
-    m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
-
     resetEncoders();
 
     m_gyro.calibrate();
@@ -111,10 +104,6 @@ public class DriveSubsystem extends SubsystemBase {
      * @param fwd the commanded forward movement
      * @param rot the commanded rotation
      */
-    public void arcadeDrive(double fwd, double rot) {
-      m_drive.arcadeDrive(fwd, rot);
-      
-    }
 
     /**
      * Controls the left and right sides of the drive directly with voltages.
@@ -125,7 +114,6 @@ public class DriveSubsystem extends SubsystemBase {
     public void tankDriveVolts(double leftVolts, double rightVolts) {
       m_leftMotors.setVoltage(leftVolts);
       m_rightMotors.setVoltage(rightVolts);
-      m_drive.feed();
     }
 
     /**
@@ -164,9 +152,6 @@ public class DriveSubsystem extends SubsystemBase {
      *
      * @param maxOutput the maximum output to which the drive will be constrained
      */
-    public void setMaxOutput(double maxOutput) {
-      m_drive.setMaxOutput(maxOutput);
-    }
 
     /**
      * Returns the heading of the robot.
