@@ -47,9 +47,9 @@ public class RobotContainer {
   private final ClimberSubsystem m_ClimberSubsystem = new ClimberSubsystem();
 
 
-  private final Joystick m_Logitech_F310 = new Joystick(0);
-  private final DoubleSupplier m_F310_LStickYAxis = () -> (-m_Logitech_F310.getY()); //Java Lambda Expression; In a Logitech F310 pushing forward yields a negative value
-  private final DoubleSupplier m_F310_LStickXAxis = () -> (m_Logitech_F310.getX());
+  private final XboxController m_Logitech_F310 = new XboxController(0);
+  private final DoubleSupplier m_F310_LStickYAxis = () -> (-m_Logitech_F310.getRawAxis(1)); //Java Lambda Expression; In a Logitech F310 pushing forward yields a negative value
+  private final DoubleSupplier m_F310_LStickXAxis = () -> (m_Logitech_F310.getRawAxis(0));
   private final DoubleSupplier m_F310_RStickXAxis = () -> (m_Logitech_F310.getRawAxis(4));
   private final JoystickButton B = new JoystickButton(m_Logitech_F310,2);
   private final JoystickButton A = new JoystickButton(m_Logitech_F310,1);
