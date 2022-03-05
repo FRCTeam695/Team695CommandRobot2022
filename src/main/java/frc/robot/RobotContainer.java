@@ -161,7 +161,10 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    return middleBottomCargoScore(); 
+    }
 
+  public Command middleBottomCargoScore(){
     return new InstantCommand(()-> {m_drivetrain.resetOdometry(HubToMiddleLeftBlueCargoTrajectory.getInitialPose());}, m_drivetrain)
     .andThen
       (
