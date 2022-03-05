@@ -29,13 +29,14 @@ public class Constants {
         public static final int kRightMotor1Port = 13;
         public static final int kRightMotor2Port = 14;
 
-        public static final double ksVolts = 0.66464;
-        public static final double kvVoltSecondsPerMeter = 2.3102;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.19084;
+        public static final double ksVolts = 0.69211;
+        public static final double kvVoltSecondsPerMeter = 2.2788;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.28155;
 
-        public static final double kPDriveVelMetersPerSec = 1.8586;
-
-        public static final double kTrackwidthMeters = 0.63213;
+        public static final double kPDriveVelMetersPerSec = 3.166;
+        
+        //If changed update pathweaver and rebuild paths
+        public static final double kTrackwidthMeters = 0.56327;
         
         // 0.15 meters - diameter of the wheel; 2048 units per rotation - Talon FX; 8.45:1 Gearbox Ratio;
         public static final double kMetersRobotTravelPerEncoderCount = .15 * 3.14 / (2048 * 10.71);   
