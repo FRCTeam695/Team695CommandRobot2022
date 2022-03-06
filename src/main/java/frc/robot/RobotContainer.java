@@ -77,6 +77,9 @@ public class RobotContainer {
   private Trajectory HubToBottomLeftBlueCargo1Trajectory = importTrajectory("paths/output/HubToBottomLeftBlueCargo1.wpilib.json");
   private Trajectory HubToBottomLeftBlueCargo2Trajectory = importTrajectory("paths/output/HubToBottomLeftBlueCargo2.wpilib.json");
   private Trajectory BottomLeftBlueCargoToHubTrajectory = importTrajectory("paths/output/BottomLeftBlueCargoToHub.wpilib.json");
+  private Trajectory HubToTopLeftBlueCargoTrajectory = importTrajectory("paths/output/HubToTopLeftBlueCargo.wpilib.json");
+  private Trajectory TopLeftBlueCargoToHubTrajectory = importTrajectory("paths/output/TopLeftBlueCargoToHub.wpilib.json");
+  private Trajectory HubToOutOfTarmacTrajectory = importTrajectory("paths/output/HubToOutOfTarmac.wpilib.json");
 
 
   private final Command m_IntakeInward = new RunCommand(
@@ -194,6 +197,74 @@ public class RobotContainer {
       )
       .andThen(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(-1);}, m_IntakeSubsystem).withTimeout(0.5))
       .andThen(() -> m_drivetrain.tankDriveVolts(0, 0));
+  }
+
+  public Command middleCargoAndScore(){
+    return new InstantCommand(()-> {m_drivetrain.resetOdometry(HubToMiddleLeftBlueCargoTrajectory.getInitialPose());}, m_drivetrain)
+    .andThen
+      (
+        generateRamseteCommand(HubToMiddleLeftBlueCargoTrajectory)
+        .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(1);}, m_IntakeSubsystem))
+        .alongWith(new LowerIntakeToBottom(m_IntakeLiftSubsystem))
+      )
+    .andThen
+      (
+        generateRamseteCommand(MiddleLeftBlueCargoToHubTrajectory)
+        .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem))
+        .alongWith(new RaiseIntakeToTop(m_IntakeLiftSubsystem))
+      )
+    .andThen(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(-1);}, m_IntakeSubsystem).withTimeout(0.5))
+    .andThen(() -> m_drivetrain.tankDriveVolts(0, 0));
+  }
+
+  public Command bottomCargoAndScore(){
+    return new InstantCommand(()-> {m_drivetrain.resetOdometry(HubToBottomLeftBlueCargo1Trajectory.getInitialPose());}, m_drivetrain)
+    .andThen(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(-1);}, m_IntakeSubsystem).withTimeout(0.5))
+    .andThen
+      (
+        generateRamseteCommand(HubToBottomLeftBlueCargo1Trajectory)
+        .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(1);}, m_IntakeSubsystem))
+        .alongWith(new LowerIntakeToBottom(m_IntakeLiftSubsystem))
+      )
+    .andThen(generateRamseteCommand(HubToBottomLeftBlueCargo2Trajectory))
+    .andThen
+      (
+        generateRamseteCommand(BottomLeftBlueCargoToHubTrajectory)
+        .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem))
+        .alongWith(new RaiseIntakeToTop(m_IntakeLiftSubsystem))
+      )
+      .andThen(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(-1);}, m_IntakeSubsystem).withTimeout(0.5))
+      .andThen(() -> m_drivetrain.tankDriveVolts(0, 0));
+  }
+
+  public Command topCargoAndScore(){
+    return new InstantCommand(()-> {m_drivetrain.resetOdometry(HubToTopLeftBlueCargoTrajectory.getInitialPose());}, m_drivetrain)
+    .andThen
+    (
+      generateRamseteCommand(HubToTopLeftBlueCargoTrajectory)
+      .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(1);}, m_IntakeSubsystem))
+      .alongWith(new LowerIntakeToBottom(m_IntakeLiftSubsystem))
+    )
+    .andThen(new TurnRelativeToHeading(m_drivetrain, -180).withTimeout(2))
+    .andThen
+    (
+      generateRamseteCommand(TopLeftBlueCargoToHubTrajectory)
+      .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem))
+      .alongWith(new RaiseIntakeToTop(m_IntakeLiftSubsystem))
+    )
+    .andThen(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(-1);}, m_IntakeSubsystem).withTimeout(0.5))
+    .andThen(() -> m_drivetrain.tankDriveVolts(0, 0));
+  }
+
+  public Command scoreAndMoveOutOfTarmac(){
+    return new InstantCommand(()-> {m_drivetrain.resetOdometry(HubToOutOfTarmacTrajectory.getInitialPose());}, m_drivetrain)
+    .andThen(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(-1);}, m_IntakeSubsystem).withTimeout(0.5))
+    .andThen
+    (
+      generateRamseteCommand(HubToOutOfTarmacTrajectory)
+      .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem))
+    )
+    .andThen(() -> m_drivetrain.tankDriveVolts(0, 0));
   }
 
   private Command generateRamseteCommand(Trajectory traj) {
