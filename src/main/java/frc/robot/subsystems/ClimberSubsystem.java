@@ -28,6 +28,12 @@ public class ClimberSubsystem extends SubsystemBase {
     m_ClimberMotor2.set(percentVBus);
   }
 
+  public void setBothClimberPercentage(double percentVBus1, double percentVBus2){
+    m_ClimberMotor1.set(percentVBus1);
+    m_ClimberMotor2.set(percentVBus2);
+
+  }
+
   public void turnClimberOff(){
     m_ClimberMotor1.set(0);
     m_ClimberMotor2.set(0);
