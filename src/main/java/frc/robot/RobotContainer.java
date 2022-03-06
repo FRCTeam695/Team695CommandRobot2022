@@ -119,14 +119,19 @@ public class RobotContainer {
     LeftStickButtons[3].whenPressed(new RaiseIntakeToTop(m_IntakeLiftSubsystem));
     LeftStickButtons[4].whenPressed(new LowerIntakeToBottom(m_IntakeLiftSubsystem));
 
-    LeftStickButtons[8].whenPressed(new EnableBrakeMode(m_drivetrain));
-    LeftStickButtons[7].whenPressed(new EnableCoastMode(m_drivetrain));
+    RightStickButtons[8].whenPressed(new EnableBrakeMode(m_drivetrain));
+    RightStickButtons[7].whenPressed(new EnableCoastMode(m_drivetrain));
     
-    LeftStickButtons[10].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber1Percentage(-0.5);},m_ClimberSubsystem));
-    LeftStickButtons[9].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber1Percentage(0.5);},m_ClimberSubsystem));
+    LeftStickButtons[8].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber1Percentage(-1);},m_ClimberSubsystem));
+    LeftStickButtons[7].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber1Percentage(1);},m_ClimberSubsystem));
     
-    LeftStickButtons[12].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber2Percentage(-0.5);},m_ClimberSubsystem));
-    LeftStickButtons[11].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber2Percentage(0.5);},m_ClimberSubsystem));
+    LeftStickButtons[10].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber2Percentage(-1);},m_ClimberSubsystem));
+    LeftStickButtons[9].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber2Percentage(1);},m_ClimberSubsystem));
+
+    LeftStickButtons[12].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setBothClimberPercentage(-1, -1);},m_ClimberSubsystem));
+    LeftStickButtons[11].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setBothClimberPercentage(1, 1);},m_ClimberSubsystem));
+
+
     CameraServer.startAutomaticCapture();
   }
 
