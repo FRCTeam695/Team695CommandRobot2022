@@ -99,7 +99,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     m_drivetrain.setDefaultCommand(m_Extreme_3D_Pro_CurvatureDrive);
-    m_IntakeSubsystem.setDefaultCommand(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem).withName("defaultStop"));
+    m_IntakeSubsystem.setDefaultCommand(m_IntakeInward);
     m_IntakeLiftSubsystem.setDefaultCommand(new IntakeLiftStop(m_IntakeLiftSubsystem));
     m_ClimberSubsystem.setDefaultCommand(new RunCommand(()-> {m_ClimberSubsystem.turnClimberOff();}, m_ClimberSubsystem));
 
@@ -107,7 +107,7 @@ public class RobotContainer {
     LeftStickButtons[2].whenPressed(new TurnRelativeToHeading(m_drivetrain, 45).withTimeout(1));
     RightStickButtons[2].whenPressed(new TurnRelativeToHeading(m_drivetrain, -45).withTimeout(1));
 
-    RightStickButtons[1].whileHeld(m_IntakeInward);
+    RightStickButtons[1].whileHeld(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem).withName("triggerStop"));
     RightStickButtons[4].whileHeld(m_IntakeOutward);
 
     RightStickButtons[9].whileHeld(new RunCommand(()->{m_IntakeLiftSubsystem.setArmPercent(-0.15);}, m_IntakeLiftSubsystem));
