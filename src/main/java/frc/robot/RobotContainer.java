@@ -63,11 +63,11 @@ public class RobotContainer {
   private final DoubleSupplier m_LeftStickXAxis = () -> (applyDeadband(m_Extreme_3D_Pro_Left.getRawAxis(0),  Constants.OIConstants.kExtreme3DProDeadband));
   private final DoubleSupplier m_LeftStickSlider = () -> (m_Extreme_3D_Pro_Left.getRawAxis(3));
   private final DoubleSupplier m_LeftStickTwistValue = () -> (m_Extreme_3D_Pro_Left.getRawAxis(2));
-  private final Button[] LeftStickButtons = createStickButtons(m_Extreme_3D_Pro_Left, 12);
+  private final Button[] LeftStickButtons = createStickButtons(m_Extreme_3D_Pro_Left);
 
   private final Joystick m_Extreme_3D_Pro_Right = new Joystick(3);
   private final DoubleSupplier m_RightStickXAxis = () -> (applyDeadband(m_Extreme_3D_Pro_Right.getRawAxis(0),  Constants.OIConstants.kExtreme3DProDeadband));
-  private final Button[] RightStickButtons = createStickButtons(m_Extreme_3D_Pro_Right, 12);  
+  private final Button[] RightStickButtons = createStickButtons(m_Extreme_3D_Pro_Right);  
 
   private final Command m_Extreme_3D_Pro_CurvatureDrive = curvatureDrive(m_LeftStickYAxis, m_RightStickXAxis, m_drivetrain);
 
@@ -136,15 +136,12 @@ public class RobotContainer {
   }
 
 
-  private static Button[] createStickButtons(Joystick joystick, int buttonCount) {
-    Button[] toReturn = new Button[buttonCount + 1];
+  private static Button[] createStickButtons(Joystick joystick) {
+    Button[] toReturn = new Button[joystick.getButtonCount() + 1];
     int i;
-    for(i = 1; i < joystick.getButtonCount() + 1; i++)
+    for(i = 1; i < toReturn.length; i++)
       toReturn[i] = new JoystickButton(joystick, i);
-
-    for(; i < toReturn.length; i++)
-      toReturn[i] = new Button();
-      return toReturn;
+    return toReturn;
   }
 
   private Trajectory importTrajectory(String trajectoryPathString) {
