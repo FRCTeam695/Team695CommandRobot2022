@@ -200,8 +200,11 @@ public class RobotContainer {
         .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem))
         .alongWith(new RaiseIntakeToTop(m_IntakeLiftSubsystem))
       )
-      .andThen(() -> m_drivetrain.tankDriveVolts(0, 0))
-      .alongWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(-1);}, m_IntakeSubsystem));
+    .andThen
+      (
+      new RunCommand(() -> m_drivetrain.tankDriveVolts(0, 0), m_drivetrain)
+      .alongWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(-1);}, m_IntakeSubsystem))
+      );
   }
 
   public Command middleCargoAndScore(){
@@ -218,8 +221,11 @@ public class RobotContainer {
         .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem))
         .alongWith(new RaiseIntakeToTop(m_IntakeLiftSubsystem))
       )
-    .andThen(() -> m_drivetrain.tankDriveVolts(0, 0))
-    .alongWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(-1);}, m_IntakeSubsystem));
+    .andThen
+      (
+      new RunCommand(() -> m_drivetrain.tankDriveVolts(0, 0), m_drivetrain)
+      .alongWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(-1);}, m_IntakeSubsystem))
+      );
   }
 
   public Command bottomCargoAndScore(){
@@ -238,8 +244,11 @@ public class RobotContainer {
         .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem))
         .alongWith(new RaiseIntakeToTop(m_IntakeLiftSubsystem))
       )
-      .andThen(() -> m_drivetrain.tankDriveVolts(0, 0))
-      .alongWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(-1);}, m_IntakeSubsystem));
+      .andThen
+      (
+      new RunCommand(() -> m_drivetrain.tankDriveVolts(0, 0), m_drivetrain)
+      .alongWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(-1);}, m_IntakeSubsystem))
+      );
   }
 
   public Command topCargoAndScore(){
@@ -257,8 +266,11 @@ public class RobotContainer {
       .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem))
       .alongWith(new RaiseIntakeToTop(m_IntakeLiftSubsystem))
     )
-    .andThen(() -> m_drivetrain.tankDriveVolts(0, 0))
-    .alongWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(-1);}, m_IntakeSubsystem));
+    .andThen
+      (
+      new RunCommand(() -> m_drivetrain.tankDriveVolts(0, 0), m_drivetrain)
+      .alongWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(-1);}, m_IntakeSubsystem))
+      );
   }
 
   public Command scoreAndMoveOutOfTarmac(){
@@ -269,8 +281,11 @@ public class RobotContainer {
       generateRamseteCommand(HubToOutOfTarmacTrajectory)
       .raceWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem))
     )
-    .andThen(() -> m_drivetrain.tankDriveVolts(0, 0))
-    .alongWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem));
+    .andThen
+      (
+      new RunCommand(() -> m_drivetrain.tankDriveVolts(0, 0), m_drivetrain)
+      .alongWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem))
+      );
   }
 
   private Command generateRamseteCommand(Trajectory traj) {
