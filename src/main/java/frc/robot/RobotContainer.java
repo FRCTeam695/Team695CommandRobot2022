@@ -6,6 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeLiftSubsystem;
@@ -26,6 +28,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -94,6 +97,8 @@ public class RobotContainer {
      },
   m_IntakeSubsystem);
 
+  SendableChooser<Command> m_chooser = new SendableChooser<>();
+  SendableChooser<Double> m_secChooser = new SendableChooser<>();
     
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -131,6 +136,21 @@ public class RobotContainer {
     LeftStickButtons[12].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setBothClimberPercentage(-1, -1);},m_ClimberSubsystem));
     LeftStickButtons[11].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setBothClimberPercentage(1, 1);},m_ClimberSubsystem));
 
+    m_chooser.setDefaultOption("middleBottomCargoScore", middleBottomCargoScore());
+    m_chooser.addOption("middleCargoAndScore", middleCargoAndScore());
+    m_chooser.addOption("bottomCargoAndScore", bottomCargoAndScore());
+    m_chooser.addOption("topCargoAndScore", topCargoAndScore());
+    m_chooser.addOption("scoreAndMoveOutOfTarmac", scoreAndMoveOutOfTarmac());
+
+    m_secChooser.setDefaultOption("0", 0.0);
+    m_secChooser.addOption("1", 1.0);
+    m_secChooser.addOption("2", 2.0);
+    m_secChooser.addOption("3", 3.0);
+    m_secChooser.addOption("4", 4.0);
+    m_secChooser.addOption("5", 5.0);
+
+    SmartDashboard.putData(m_chooser);
+    SmartDashboard.putData(m_secChooser);
 
     CameraServer.startAutomaticCapture();
   }
@@ -166,7 +186,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return middleBottomCargoScore(); 
+    return new WaitCommand(m_secChooser.getSelected())
+    .andThen(m_chooser.getSelected()); 
     }
 
   public Command middleBottomCargoScore(){
