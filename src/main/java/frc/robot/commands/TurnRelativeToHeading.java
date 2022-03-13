@@ -39,7 +39,7 @@ public class TurnRelativeToHeading extends CommandBase {
     m_error = desiredAngle - currentAngle;
 
     double driveVolts = kP * DriveConstants.kMaxDrivetrainVolts * m_error;
-    double maxDriveVolts = 2.5;
+    double maxDriveVolts = 3.0;
     if (driveVolts > maxDriveVolts){
       driveVolts = maxDriveVolts;
     }
