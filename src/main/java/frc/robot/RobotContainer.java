@@ -13,6 +13,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeLiftSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -186,8 +187,11 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    Command selected = m_chooser.getSelected();
+    CommandGroupBase.clearGroupedCommand(selected);
+
     return new WaitCommand(m_secChooser.getSelected())
-    .andThen(m_chooser.getSelected()); 
+    .andThen(selected); 
     }
 
   public Command middleBottomCargoScore(){
