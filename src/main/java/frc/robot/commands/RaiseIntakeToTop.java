@@ -10,11 +10,13 @@ import frc.robot.subsystems.IntakeLiftSubsystem;
 public class RaiseIntakeToTop extends CommandBase {
 
   private final IntakeLiftSubsystem m_IntakeLiftSubsystem;
+  private double liftPercent;
 
-  public RaiseIntakeToTop(IntakeLiftSubsystem intakeLift) {
+  public RaiseIntakeToTop(IntakeLiftSubsystem intakeLift, double liftSpeed) {
 
     m_IntakeLiftSubsystem = intakeLift;
     addRequirements(m_IntakeLiftSubsystem);
+    liftPercent = liftSpeed;
   }
 
   // Called when the command is initially scheduled.
@@ -24,7 +26,7 @@ public class RaiseIntakeToTop extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_IntakeLiftSubsystem.setArmPercent(0.6);
+    m_IntakeLiftSubsystem.setArmPercent(liftPercent);
   }
 
   // Called once the command ends or is interrupted.
