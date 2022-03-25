@@ -45,10 +45,14 @@ public class DriveSubsystem extends SubsystemBase {
     m_rightMotors.setInverted(true);
     resetEncoders();
 
-    m_gyro.calibrate();
-    m_gyro.reset();
+    resetGyro();
 
     m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
+  }
+
+  public void resetGyro() {
+    m_gyro.calibrate();
+    m_gyro.reset();
   }
 
   public void setNeutralMode(NeutralMode neutralMode) {

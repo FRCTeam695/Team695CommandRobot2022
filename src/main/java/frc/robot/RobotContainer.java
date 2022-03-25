@@ -154,6 +154,8 @@ public class RobotContainer {
     SmartDashboard.putData(m_secChooser);
 
     CameraServer.startAutomaticCapture();
+
+    SmartDashboard.putData(new resetGyro(m_drivetrain));
   }
 
 
