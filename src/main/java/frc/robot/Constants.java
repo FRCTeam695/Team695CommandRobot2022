@@ -33,7 +33,7 @@ public class Constants {
         public static final double kvVoltSecondsPerMeter = 2.3779;
         public static final double kaVoltSecondsSquaredPerMeter = 0.36794;
 
-        public static final double kPDriveVelMetersPerSec = 4.0;
+        public static final double kPDriveVelMetersPerSec = 6.0;
         
         //If changed update pathweaver and rebuild paths
         public static final double kTrackwidthMeters = 0.54605;
