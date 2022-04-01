@@ -84,6 +84,10 @@ public class RobotContainer {
   private Trajectory HubToTopLeftBlueCargoTrajectory = importTrajectory("paths/output/HubToTopLeftBlueCargo.wpilib.json");
   private Trajectory TopLeftBlueCargoToHubTrajectory = importTrajectory("paths/output/TopLeftBlueCargoToHub.wpilib.json");
   private Trajectory HubToOutOfTarmacTrajectory = importTrajectory("paths/output/HubToOutOfTarmac.wpilib.json");
+  private Trajectory GoStraightTestTrajectory = importTrajectory("paths/output/GoStraight.wpilib.json");
+  private Trajectory OneTurnTestTrajectory = importTrajectory("paths/output/OneTurn.wpilib.json");
+  private Trajectory CosineTestTrajectory = importTrajectory("paths/output/Cosine.wpilib.json");
+  private Trajectory SimpleCurveTestTrajectory = importTrajectory("paths/output/SimpleCurve.wpilib.json");
 
 
   private final Command m_IntakeInward = new RunCommand(
@@ -142,6 +146,11 @@ public class RobotContainer {
     m_chooser.addOption("bottomCargoAndScore", bottomCargoAndScore());
     m_chooser.addOption("topCargoAndScore", topCargoAndScore());
     m_chooser.addOption("scoreAndMoveOutOfTarmac", scoreAndMoveOutOfTarmac());
+    m_chooser.addOption("goStraightTest", goStraightTest());
+    m_chooser.addOption("oneTurn", oneTurnTest());
+    m_chooser.addOption("cosineTest", cosineTest());
+    m_chooser.addOption("simpleCurve", simpleCurveTest());
+
 
     m_secChooser.setDefaultOption("0", 0.0);
     m_secChooser.addOption("1", 1.0);
@@ -312,6 +321,26 @@ public class RobotContainer {
       new RunCommand(() -> m_drivetrain.tankDriveVolts(0, 0), m_drivetrain)
       .alongWith(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem))
       );
+  }
+
+  public Command goStraightTest(){
+    return new InstantCommand(()-> {m_drivetrain.resetOdometry(GoStraightTestTrajectory.getInitialPose());}, m_drivetrain)
+    .andThen(generateRamseteCommand(GoStraightTestTrajectory));
+  }
+
+  public Command oneTurnTest(){
+    return new InstantCommand(()-> {m_drivetrain.resetOdometry(OneTurnTestTrajectory.getInitialPose());}, m_drivetrain)
+    .andThen(generateRamseteCommand(OneTurnTestTrajectory));
+  }
+
+  public Command cosineTest(){
+    return new InstantCommand(()-> {m_drivetrain.resetOdometry(CosineTestTrajectory.getInitialPose());}, m_drivetrain)
+    .andThen(generateRamseteCommand(CosineTestTrajectory));
+  }
+
+  public Command simpleCurveTest(){
+    return new InstantCommand(()-> {m_drivetrain.resetOdometry(SimpleCurveTestTrajectory.getInitialPose());}, m_drivetrain)
+    .andThen(generateRamseteCommand(SimpleCurveTestTrajectory));
   }
 
   private Command generateRamseteCommand(Trajectory traj) {
