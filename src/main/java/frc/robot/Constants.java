@@ -47,17 +47,20 @@ public class Constants {
         public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(
                 kTrackwidthMeters);
     }
-        public static final class OIConstants {
-            public static final int kDriverControllerPort = 0;
-            public static final double kExtreme3DProDeadband = 0.02;
-        }
-        
-        public static final class AutoConstants {
-            public static final double kMaxSpeedMetersPerSecond = 1;
-            public static final double kMaxAccelerationMetersPerSecondSquared = 0.5;
-        
-            // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
-            public static final double kRamseteB = 2;
-            public static final double kRamseteZeta = 0.7;
-        }
+    public static final class OIConstants {
+        public static final int kDriverControllerPort = 0;
+        public static final double kExtreme3DProDeadband = 0.02;
+    }
+    
+    public static final class AutoConstants {
+        public static final double kMaxSpeedMetersPerSecond = 1;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 0.5;
+    
+        // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
+        public static final double kRamseteB = 2;
+        public static final double kRamseteZeta = 0.7;
+    }
+    public static final class IntakeLiftConstants {
+        public static final double kFastIntakeRaise = 0.6;
+    } 
 }
