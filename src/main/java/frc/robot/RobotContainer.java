@@ -88,6 +88,9 @@ public class RobotContainer {
   private Trajectory OneTurnTestTrajectory = importTrajectory("paths/output/OneTurn.wpilib.json");
   private Trajectory CosineTestTrajectory = importTrajectory("paths/output/Cosine.wpilib.json");
   private Trajectory SimpleCurveTestTrajectory = importTrajectory("paths/output/SimpleCurve.wpilib.json");
+  private Trajectory GoStraightBackTestTrajectory = importTrajectory("paths/output/GoStraightBack.wpilib.json");
+  private Trajectory SimpleCurve2TestTrajectory = importTrajectory("paths/output/SimpleCurve2.wpilib.json");
+  private Trajectory SimpleCurve2BackTestTrajectory = importTrajectory("paths/output/SimpleCurve2Back.wpilib.json");
 
 
   private final Command m_IntakeInward = new RunCommand(
@@ -150,6 +153,8 @@ public class RobotContainer {
     m_chooser.addOption("oneTurn", oneTurnTest());
     m_chooser.addOption("cosineTest", cosineTest());
     m_chooser.addOption("simpleCurve", simpleCurveTest());
+    m_chooser.addOption("goStraightandBackTest", goStraightandBackTest());
+    m_chooser.addOption("simpleCuve2andBackTest", simpleCurve2andBackTest());
 
 
     m_secChooser.setDefaultOption("0", 0.0);
@@ -341,6 +346,18 @@ public class RobotContainer {
   public Command simpleCurveTest(){
     return new InstantCommand(()-> {m_drivetrain.resetOdometry(SimpleCurveTestTrajectory.getInitialPose());}, m_drivetrain)
     .andThen(generateRamseteCommand(SimpleCurveTestTrajectory));
+  }
+
+  public Command goStraightandBackTest(){
+    return new InstantCommand(()-> {m_drivetrain.resetOdometry(GoStraightTestTrajectory.getInitialPose());}, m_drivetrain)
+    .andThen(generateRamseteCommand(GoStraightTestTrajectory))
+    .andThen(generateRamseteCommand(GoStraightBackTestTrajectory));
+  }
+
+  public Command simpleCurve2andBackTest(){
+    return new InstantCommand(()-> {m_drivetrain.resetOdometry(SimpleCurve2TestTrajectory.getInitialPose());}, m_drivetrain)
+    .andThen(generateRamseteCommand(SimpleCurve2TestTrajectory))
+    .andThen(generateRamseteCommand(SimpleCurve2BackTestTrajectory));
   }
 
   private Command generateRamseteCommand(Trajectory traj) {
