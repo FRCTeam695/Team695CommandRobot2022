@@ -344,17 +344,20 @@ public class RobotContainer {
   }
 
   private Command generateRamseteCommand(Trajectory traj) {
+    RamseteController standardRamseteController = new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta);
+    PIDController leftWheelsController = new PIDController(DriveConstants.kPDriveVelMetersPerSec, 0, 0);
+    PIDController rightWheelsController = new PIDController(DriveConstants.kPDriveVelMetersPerSec, 0, 0);
     RamseteCommand ramseteCommand = new RamseteCommand(
         traj,
         m_drivetrain::getPose,
-        new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+        standardRamseteController,
         new SimpleMotorFeedforward(DriveConstants.ksVolts,
                                    DriveConstants.kvVoltSecondsPerMeter,
                                    DriveConstants.kaVoltSecondsSquaredPerMeter),
         DriveConstants.kDriveKinematics,
         m_drivetrain::getWheelSpeeds,
-        new PIDController(DriveConstants.kPDriveVelMetersPerSec, 0, 0),
-        new PIDController(DriveConstants.kPDriveVelMetersPerSec, 0, 0),
+        leftWheelsController,
+        rightWheelsController,
         // RamseteCommand passes volts to the callback
         m_drivetrain::tankDriveVolts,
         m_drivetrain
