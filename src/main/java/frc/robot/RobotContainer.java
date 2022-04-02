@@ -59,13 +59,13 @@ public class RobotContainer {
   private final JoystickButton A = new JoystickButton(m_Logitech_F310,1);
   private final JoystickButton X = new JoystickButton(m_Logitech_F310,3);
   private final JoystickButton Y = new JoystickButton(m_Logitech_F310,4);
-  private final Command m_F310_CurvatureDrive = curvatureDrive(m_F310_LStickYAxis, m_F310_RStickXAxis, m_drivetrain);
+  private final Command m_F310_CurvatureDrive = curvatureDrive(m_F310_LStickYAxis, m_F310_RStickXAxis, ()-> (1), m_drivetrain);
 
 
   private final Joystick m_Extreme_3D_Pro_Left = new Joystick(2);
   private final DoubleSupplier m_LeftStickYAxis = () -> (-applyDeadband(m_Extreme_3D_Pro_Left.getRawAxis(1), Constants.OIConstants.kExtreme3DProDeadband));
   private final DoubleSupplier m_LeftStickXAxis = () -> (applyDeadband(m_Extreme_3D_Pro_Left.getRawAxis(0),  Constants.OIConstants.kExtreme3DProDeadband));
-  private final DoubleSupplier m_LeftStickSlider = () -> (m_Extreme_3D_Pro_Left.getRawAxis(3));
+  private final DoubleSupplier m_LeftStickSlider = () -> ((-m_Extreme_3D_Pro_Left.getRawAxis(3)+1)/2);
   private final DoubleSupplier m_LeftStickTwistValue = () -> (m_Extreme_3D_Pro_Left.getRawAxis(2));
   private final Button[] LeftStickButtons = createStickButtons(m_Extreme_3D_Pro_Left);
 
@@ -73,7 +73,7 @@ public class RobotContainer {
   private final DoubleSupplier m_RightStickXAxis = () -> (applyDeadband(m_Extreme_3D_Pro_Right.getRawAxis(0),  Constants.OIConstants.kExtreme3DProDeadband));
   private final Button[] RightStickButtons = createStickButtons(m_Extreme_3D_Pro_Right);  
 
-  private final Command m_Extreme_3D_Pro_CurvatureDrive = curvatureDrive(m_LeftStickYAxis, m_RightStickXAxis, m_drivetrain);
+  private final Command m_Extreme_3D_Pro_CurvatureDrive = curvatureDrive(m_LeftStickYAxis, m_RightStickXAxis, m_LeftStickSlider, m_drivetrain);
 
 
   private Trajectory HubToMiddleLeftBlueCargoTrajectory = importTrajectory("paths/output/HubToMiddleLeftBlueCargo.wpilib.json");
@@ -376,12 +376,17 @@ public class RobotContainer {
     }
   }
 
-  public static Command curvatureDrive(DoubleSupplier forwardSupplier, DoubleSupplier rotationSupplier, DriveSubsystem driveSubsystem)
+  public void print(){
+    SmartDashboard.putNumber("Sensitivity", m_LeftStickSlider.getAsDouble());
+  }
+
+  public static Command curvatureDrive(DoubleSupplier forwardSupplier, DoubleSupplier rotationSupplier, DoubleSupplier rotationSensitivity, DriveSubsystem driveSubsystem)
   {
     return new RunCommand(
       () -> {
         double fwd = forwardSupplier.getAsDouble();
         double rot = rotationSupplier.getAsDouble();
+        double sensitivity = rotationSensitivity.getAsDouble();
         double adjustedRot = rot;
         double deadband = 0.2;
         boolean isQuickTurn =  fwd < deadband && fwd > -deadband;
@@ -391,7 +396,7 @@ public class RobotContainer {
     
         double xSpeed = MathUtil.clamp(fwd, -1.0, 1.0);
         double zRotation = MathUtil.clamp(adjustedRot, -1.0, 1.0);
-        zRotation = zRotation * 0.5;
+        zRotation = zRotation * sensitivity;
     
         double leftSpeed;
         double rightSpeed;
