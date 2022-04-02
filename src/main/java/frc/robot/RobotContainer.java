@@ -138,7 +138,7 @@ public class RobotContainer {
     RightStickButtons[10].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber2Percentage(-0.25);},m_ClimberSubsystem));
     RightStickButtons[9].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber2Percentage(0.25);},m_ClimberSubsystem));
 
-    RightStickButtons[12].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setBothClimberPercentage(-1, -1);},m_ClimberSubsystem));
+    LeftStickButtons[1].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setBothClimberPercentage(-1, -1);},m_ClimberSubsystem));
     RightStickButtons[11].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setBothClimberPercentage(1, 1);},m_ClimberSubsystem));
 
     m_chooser.setDefaultOption("middleBottomCargoScore", middleBottomCargoScore());
