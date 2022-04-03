@@ -36,7 +36,7 @@ public class Constants {
         public static final double kPDriveVelMetersPerSec = 3.2887;
         
         //If changed update pathweaver and rebuild paths
-        public static final double kTrackwidthMeters = 0.54605;
+        public static final double kTrackwidthMeters = 0.59654;
         
         // 0.15 meters - diameter of the wheel; 2048 units per rotation - Talon FX; 8.45:1 Gearbox Ratio;
         public static final double kMetersRobotTravelPerEncoderCount = .15 * 3.14 / (2048 * 10.71);   
