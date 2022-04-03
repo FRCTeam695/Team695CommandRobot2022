@@ -15,6 +15,7 @@ public class TurnRelativeToHeading extends CommandBase {
   private final double m_differenceInAngle;
   private double m_desiredAngle;
   private final double kP = 0.015;
+  private final double kD = 0.128;
   private double m_error;
 
   public TurnRelativeToHeading(DriveSubsystem drivetrain, double differenceInAngle) {
@@ -35,11 +36,12 @@ public class TurnRelativeToHeading extends CommandBase {
   public void execute() {
     double desiredAngle = m_desiredAngle;
     double currentAngle = m_drivetrain.getHeading();
+    double currentAngleRate = m_drivetrain.getTurnRate();
 
     m_error = desiredAngle - currentAngle;
 
-    double driveVolts = kP * DriveConstants.kMaxDrivetrainVolts * m_error;
-    double maxDriveVolts = 3.0;
+    double driveVolts = DriveConstants.kMaxDrivetrainVolts * ((kP * m_error) - (kD * currentAngleRate));
+    double maxDriveVolts = 5.0;
     if (driveVolts > maxDriveVolts){
       driveVolts = maxDriveVolts;
     }
