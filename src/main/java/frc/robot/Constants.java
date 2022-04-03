@@ -33,7 +33,7 @@ public class Constants {
         public static final double kvVoltSecondsPerMeter = 2.3553;
         public static final double kaVoltSecondsSquaredPerMeter = 0.4163;
 
-        public static final double kPDriveVelMetersPerSec = 3.3709;
+        public static final double kPDriveVelMetersPerSec = 3.3709 * 0.25;
         
         //If changed update pathweaver and rebuild paths
         public static final double kTrackwidthMeters = 0.60567;
@@ -57,7 +57,7 @@ public class Constants {
         public static final double kMaxAccelerationMetersPerSecondSquared = 0.5;
     
         // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
-        public static final double kRamseteB = 2;
+        public static final double kRamseteB = 2 * 2;
         public static final double kRamseteZeta = 0.7;
     }
     public static final class IntakeLiftConstants {
