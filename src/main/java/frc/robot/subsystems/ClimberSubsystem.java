@@ -11,32 +11,32 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimberSubsystem extends SubsystemBase {
   /** Creates a new ClimberSubsystem. */
-  private final WPI_TalonFX m_ClimberMotor1 = new WPI_TalonFX(5);
-  private final WPI_TalonFX m_ClimberMotor2 = new WPI_TalonFX(6);
+  //private final WPI_TalonFX m_ClimberMotor1 = new WPI_TalonFX(5);
+  //private final WPI_TalonFX m_ClimberMotor2 = new WPI_TalonFX(6);
 
 
   public ClimberSubsystem() {
-    m_ClimberMotor1.setNeutralMode(NeutralMode.Brake);
-    m_ClimberMotor2.setNeutralMode(NeutralMode.Brake);
+    //m_ClimberMotor1.setNeutralMode(NeutralMode.Brake);
+    //m_ClimberMotor2.setNeutralMode(NeutralMode.Brake);
   }
 
   public void setClimber1Percentage(double percentVBus){
-    m_ClimberMotor1.set(percentVBus);
+    //m_ClimberMotor1.set(percentVBus);
   }
 
   public void setClimber2Percentage(double percentVBus){
-    m_ClimberMotor2.set(percentVBus);
+    //m_ClimberMotor2.set(percentVBus);
   }
 
   public void setBothClimberPercentage(double percentVBus1, double percentVBus2){
-    m_ClimberMotor1.set(percentVBus1);
-    m_ClimberMotor2.set(percentVBus2);
+    //m_ClimberMotor1.set(percentVBus1);
+    //m_ClimberMotor2.set(percentVBus2);
 
   }
 
   public void turnClimberOff(){
-    m_ClimberMotor1.set(0);
-    m_ClimberMotor2.set(0);
+    //m_ClimberMotor1.set(0);
+    //m_ClimberMotor2.set(0);
   }
 
   @Override

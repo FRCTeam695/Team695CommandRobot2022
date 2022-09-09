@@ -48,7 +48,7 @@ public class RobotContainer {
   private final DriveSubsystem m_drivetrain = new DriveSubsystem();
   private final IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
   private final IntakeLiftSubsystem m_IntakeLiftSubsystem = new IntakeLiftSubsystem();
-  private final ClimberSubsystem m_ClimberSubsystem = new ClimberSubsystem();
+  //private final ClimberSubsystem m_ClimberSubsystem = new ClimberSubsystem();
 
 
   private final XboxController m_Logitech_F310 = new XboxController(0);
@@ -114,7 +114,7 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(m_Extreme_3D_Pro_CurvatureDrive);
     m_IntakeSubsystem.setDefaultCommand(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem).withName("defaultStop"));
     m_IntakeLiftSubsystem.setDefaultCommand(new IntakeLiftStop(m_IntakeLiftSubsystem));
-    m_ClimberSubsystem.setDefaultCommand(new RunCommand(()-> {m_ClimberSubsystem.turnClimberOff();}, m_ClimberSubsystem));
+    //m_ClimberSubsystem.setDefaultCommand(new RunCommand(()-> {m_ClimberSubsystem.turnClimberOff();}, m_ClimberSubsystem));
 
 
     LeftStickButtons[2].whenPressed(new TurnRelativeToHeading(m_drivetrain, 45).withTimeout(1));
@@ -135,14 +135,14 @@ public class RobotContainer {
     LeftStickButtons[8].whenPressed(new EnableBrakeMode(m_drivetrain));
     LeftStickButtons[7].whenPressed(new EnableCoastMode(m_drivetrain));
     
-    RightStickButtons[8].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber1Percentage(-0.25);},m_ClimberSubsystem));
-    RightStickButtons[7].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber1Percentage(0.25);},m_ClimberSubsystem));
+    //RightStickButtons[8].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber1Percentage(-0.25);},m_ClimberSubsystem));
+    //RightStickButtons[7].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber1Percentage(0.25);},m_ClimberSubsystem));
     
-    RightStickButtons[10].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber2Percentage(-0.25);},m_ClimberSubsystem));
-    RightStickButtons[9].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber2Percentage(0.25);},m_ClimberSubsystem));
+    //RightStickButtons[10].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber2Percentage(-0.25);},m_ClimberSubsystem));
+    //RightStickButtons[9].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setClimber2Percentage(0.25);},m_ClimberSubsystem));
 
-    LeftStickButtons[1].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setBothClimberPercentage(-1, -1);},m_ClimberSubsystem));
-    RightStickButtons[11].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setBothClimberPercentage(1, 1);},m_ClimberSubsystem));
+    //LeftStickButtons[1].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setBothClimberPercentage(-1, -1);},m_ClimberSubsystem));
+    //RightStickButtons[11].whileHeld(new RunCommand(()->{m_ClimberSubsystem.setBothClimberPercentage(1, 1);},m_ClimberSubsystem));
 
     m_chooser.setDefaultOption("middleBottomCargoScore", middleBottomCargoScore());
     m_chooser.addOption("middleCargoAndScore", middleCargoAndScore());
