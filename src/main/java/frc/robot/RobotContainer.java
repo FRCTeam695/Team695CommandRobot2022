@@ -73,7 +73,7 @@ public class RobotContainer {
   private final DoubleSupplier m_RightStickXAxis = () -> (applyDeadband(m_Extreme_3D_Pro_Right.getRawAxis(0),  Constants.OIConstants.kExtreme3DProDeadband));
   private final Button[] RightStickButtons = createStickButtons(m_Extreme_3D_Pro_Right);  
 
-  private final Command m_Extreme_3D_Pro_CurvatureDrive = curvatureDrive(m_LeftStickYAxis, m_RightStickXAxis, m_LeftStickSlider, m_drivetrain);
+  private final Command m_Extreme_3D_Pro_CurvatureDrive = curvatureDrive(m_LeftStickYAxis, m_RightStickXAxis, ()-> (0.55), m_drivetrain);
 
 
   private Trajectory HubToMiddleLeftBlueCargoTrajectory = importTrajectory("paths/output/HubToMiddleLeftBlueCargo.wpilib.json");
