@@ -15,6 +15,9 @@ public class IntakeLiftSubsystem extends SubsystemBase {
   private final WPI_TalonFX m_IntakeLiftMotor = new WPI_TalonFX(2);
 
   private static final double ENCODER_POSITION_WHEN_UP = 46900; //Empirically Determined
+
+  public double intakeLiftPosition;
+
   public IntakeLiftSubsystem() {
     m_IntakeLiftMotor.setNeutralMode(NeutralMode.Brake);
     resetIntakeLiftPositionToUp();
@@ -44,5 +47,6 @@ public class IntakeLiftSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("IntakeLiftPosition", getArmPosition());
+    intakeLiftPosition = getArmPosition();
   }
 }
