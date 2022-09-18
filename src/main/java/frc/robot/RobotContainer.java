@@ -149,12 +149,6 @@ public class RobotContainer {
     m_chooser.addOption("bottomCargoAndScore", bottomCargoAndScore());
     m_chooser.addOption("topCargoAndScore", topCargoAndScore());
     m_chooser.addOption("scoreAndMoveOutOfTarmac", scoreAndMoveOutOfTarmac());
-    m_chooser.addOption("goStraightTest", goStraightTest());
-    m_chooser.addOption("oneTurn", oneTurnTest());
-    m_chooser.addOption("cosineTest", cosineTest());
-    m_chooser.addOption("simpleCurve", simpleCurveTest());
-    m_chooser.addOption("goStraightandBackTest", goStraightandBackTest());
-    m_chooser.addOption("simpleCuve2andBackTest", simpleCurve2andBackTest());
 
 
     m_secChooser.setDefaultOption("0", 0.0);
