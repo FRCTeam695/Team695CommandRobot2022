@@ -13,7 +13,6 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeLiftSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -30,8 +29,8 @@ import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -67,11 +66,11 @@ public class RobotContainer {
   private final DoubleSupplier m_LeftStickXAxis = () -> (applyDeadband(m_Extreme_3D_Pro_Left.getRawAxis(0),  Constants.OIConstants.kExtreme3DProDeadband));
   private final DoubleSupplier m_LeftStickSlider = () -> ((-m_Extreme_3D_Pro_Left.getRawAxis(3)+1)/2);
   private final DoubleSupplier m_LeftStickTwistValue = () -> (m_Extreme_3D_Pro_Left.getRawAxis(2));
-  private final Button[] LeftStickButtons = createStickButtons(m_Extreme_3D_Pro_Left);
+  private final Trigger[] LeftStickButtons = createStickButtons(m_Extreme_3D_Pro_Left);
 
   private final Joystick m_Extreme_3D_Pro_Right = new Joystick(3);
   private final DoubleSupplier m_RightStickXAxis = () -> (applyDeadband(m_Extreme_3D_Pro_Right.getRawAxis(0),  Constants.OIConstants.kExtreme3DProDeadband));
-  private final Button[] RightStickButtons = createStickButtons(m_Extreme_3D_Pro_Right);  
+  private final Trigger[] RightStickButtons = createStickButtons(m_Extreme_3D_Pro_Right);  
 
   private final Command m_Extreme_3D_Pro_CurvatureDrive = curvatureDrive(m_LeftStickYAxis, m_RightStickXAxis, ()-> (0.55), m_drivetrain);
 
@@ -117,32 +116,32 @@ public class RobotContainer {
     m_ClimberSubsystem.setDefaultCommand(new RunCommand(()-> {m_ClimberSubsystem.turnClimberOff();}, m_ClimberSubsystem));
 
 
-    LeftStickButtons[2].whenPressed(new TurnRelativeToHeading(m_drivetrain, 45).withTimeout(1));
-    RightStickButtons[2].whenPressed(new TurnRelativeToHeading(m_drivetrain, -45).withTimeout(1));
+    LeftStickButtons[2].onTrue(new TurnRelativeToHeading(m_drivetrain, 45).withTimeout(1));
+    RightStickButtons[2].onTrue(new TurnRelativeToHeading(m_drivetrain, -45).withTimeout(1));
 
-    RightStickButtons[1].whileHeld(m_IntakeInward);
-    RightStickButtons[4].whileHeld(m_IntakeOutward);
+    RightStickButtons[1].whileTrue(m_IntakeInward);
+    RightStickButtons[4].whileTrue(m_IntakeOutward);
 
-    LeftStickButtons[9].whileHeld(new RunCommand(()->{m_IntakeLiftSubsystem.setArmPercent(-0.15);}, m_IntakeLiftSubsystem));
-    LeftStickButtons[10].whileHeld(new RunCommand(()->{m_IntakeLiftSubsystem.setArmPercent(0.15);}, m_IntakeLiftSubsystem));
+    LeftStickButtons[9].whileTrue(new RunCommand(()->{m_IntakeLiftSubsystem.setArmPercent(-0.15);}, m_IntakeLiftSubsystem));
+    LeftStickButtons[10].whileTrue(new RunCommand(()->{m_IntakeLiftSubsystem.setArmPercent(0.15);}, m_IntakeLiftSubsystem));
     
-    LeftStickButtons[11].whenPressed(new InstantCommand(()-> {m_IntakeLiftSubsystem.resetIntakeLiftPositionToDown();}, m_IntakeLiftSubsystem));
-    LeftStickButtons[12].whenPressed(new InstantCommand(()-> {m_IntakeLiftSubsystem.resetIntakeLiftPositionToUp();}, m_IntakeLiftSubsystem));
+    LeftStickButtons[11].onTrue(new InstantCommand(()-> {m_IntakeLiftSubsystem.resetIntakeLiftPositionToDown();}, m_IntakeLiftSubsystem));
+    LeftStickButtons[12].onTrue(new InstantCommand(()-> {m_IntakeLiftSubsystem.resetIntakeLiftPositionToUp();}, m_IntakeLiftSubsystem));
     
-    LeftStickButtons[3].whenPressed(new RaiseIntakeToTop(m_IntakeLiftSubsystem, IntakeLiftConstants.kFastIntakeRaise));
-    LeftStickButtons[4].whenPressed(new LowerIntakeToBottom(m_IntakeLiftSubsystem));
+    LeftStickButtons[3].onTrue(new RaiseIntakeToTop(m_IntakeLiftSubsystem, IntakeLiftConstants.kFastIntakeRaise));
+    LeftStickButtons[4].onTrue(new LowerIntakeToBottom(m_IntakeLiftSubsystem));
 
-    LeftStickButtons[8].whenPressed(new EnableBrakeMode(m_drivetrain));
-    LeftStickButtons[7].whenPressed(new EnableCoastMode(m_drivetrain));
+    LeftStickButtons[8].onTrue(new EnableBrakeMode(m_drivetrain));
+    LeftStickButtons[7].onTrue(new EnableCoastMode(m_drivetrain));
     
-    RightStickButtons[8].whileHeld(new ActuateClimberOne(m_ClimberSubsystem, m_IntakeLiftSubsystem, -0.25));
-    RightStickButtons[7].whileHeld(new ActuateClimberOne(m_ClimberSubsystem, m_IntakeLiftSubsystem, 0.25));
+    RightStickButtons[8].whileTrue(new ActuateClimberOne(m_ClimberSubsystem, m_IntakeLiftSubsystem, -0.25));
+    RightStickButtons[7].whileTrue(new ActuateClimberOne(m_ClimberSubsystem, m_IntakeLiftSubsystem, 0.25));
     
-    RightStickButtons[10].whileHeld(new ActuateClimberTwo(m_ClimberSubsystem, m_IntakeLiftSubsystem, -0.25));
-    RightStickButtons[9].whileHeld(new ActuateClimberTwo(m_ClimberSubsystem, m_IntakeLiftSubsystem, 0.25));
+    RightStickButtons[10].whileTrue(new ActuateClimberTwo(m_ClimberSubsystem, m_IntakeLiftSubsystem, -0.25));
+    RightStickButtons[9].whileTrue(new ActuateClimberTwo(m_ClimberSubsystem, m_IntakeLiftSubsystem, 0.25));
 
-    LeftStickButtons[1].whileHeld(new ActuateBothClimbers(m_ClimberSubsystem, m_IntakeLiftSubsystem, -1));
-    RightStickButtons[11].whileHeld(new ActuateBothClimbers(m_ClimberSubsystem, m_IntakeLiftSubsystem, 1));
+    LeftStickButtons[1].whileTrue(new ActuateBothClimbers(m_ClimberSubsystem, m_IntakeLiftSubsystem, -1));
+    RightStickButtons[11].whileTrue(new ActuateBothClimbers(m_ClimberSubsystem, m_IntakeLiftSubsystem, 1));
 
     m_chooser.setDefaultOption("middleBottomCargoScore", middleBottomCargoScore());
     m_chooser.addOption("middleCargoAndScore", middleCargoAndScore());
@@ -167,8 +166,8 @@ public class RobotContainer {
   }
 
 
-  private static Button[] createStickButtons(Joystick joystick) {
-    Button[] toReturn = new Button[joystick.getButtonCount() + 1];
+  private static Trigger[] createStickButtons(Joystick joystick) {
+    Trigger[] toReturn = new Trigger[joystick.getButtonCount() + 1];
     int i;
     for(i = 1; i < toReturn.length; i++)
       toReturn[i] = new JoystickButton(joystick, i);
