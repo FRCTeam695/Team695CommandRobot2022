@@ -52,9 +52,9 @@ public class RobotContainer {
 
 
   private final XboxController m_Logitech_F310 = new XboxController(0);
-  private final DoubleSupplier m_F310_LStickYAxis = () -> (-m_Logitech_F310.getRawAxis(1)); //Java Lambda Expression; In a Logitech F310 pushing forward yields a negative value
-  private final DoubleSupplier m_F310_LStickXAxis = () -> (m_Logitech_F310.getRawAxis(0));
-  private final DoubleSupplier m_F310_RStickXAxis = () -> (m_Logitech_F310.getRawAxis(4));
+  private final DoubleSupplier m_F310_LStickYAxis = () -> (0.1 * -m_Logitech_F310.getRawAxis(1)); //Java Lambda Expression; In a Logitech F310 pushing forward yields a negative value
+  private final DoubleSupplier m_F310_LStickXAxis = () -> (0.1 * m_Logitech_F310.getRawAxis(0));
+  private final DoubleSupplier m_F310_RStickXAxis = () -> (0.1 * m_Logitech_F310.getRawAxis(4));
   private final JoystickButton B = new JoystickButton(m_Logitech_F310,2);
   private final JoystickButton A = new JoystickButton(m_Logitech_F310,1);
   private final JoystickButton X = new JoystickButton(m_Logitech_F310,3);
@@ -430,8 +430,8 @@ public class RobotContainer {
           rightSpeed /= maxMagnitude;
         }
         driveSubsystem.tankDriveVolts(
-          DriveConstants.kMaxDrivetrainVolts * leftSpeed,
-          DriveConstants.kMaxDrivetrainVolts * rightSpeed);
+          1.0 * DriveConstants.kMaxDrivetrainVolts * leftSpeed,
+          1.0 * DriveConstants.kMaxDrivetrainVolts * rightSpeed);
       },
       driveSubsystem);
   }
