@@ -198,7 +198,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     Command selected = m_chooser.getSelected();
-    CommandGroupBase.clearGroupedCommand(selected);
+    //CommandGroupBase.clearGroupedCommand(selected);
 
     return new WaitCommand(m_secChooser.getSelected())
     .andThen(selected); 
