@@ -49,7 +49,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     resetGyro();
 
-    m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
+    m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), 0, 0);
   }
 
   public void resetGyro() {
@@ -101,7 +101,7 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public void resetOdometry(Pose2d pose) {
       resetEncoders();
-      m_odometry.resetPosition(pose, m_gyro.getRotation2d());
+      m_odometry.resetPosition(m_gyro.getRotation2d(), 0, 0, pose);
     }
 
     /**
