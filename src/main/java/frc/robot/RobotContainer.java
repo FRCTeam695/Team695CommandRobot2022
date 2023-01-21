@@ -8,10 +8,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.IntakeLiftSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -45,10 +42,6 @@ import java.util.function.DoubleSupplier;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem m_drivetrain = new DriveSubsystem();
-  private final IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
-  private final IntakeLiftSubsystem m_IntakeLiftSubsystem = new IntakeLiftSubsystem();
-  private final ClimberSubsystem m_ClimberSubsystem = new ClimberSubsystem();
-
 
   private final XboxController m_Logitech_F310 = new XboxController(0);
   private final DoubleSupplier m_F310_LStickYAxis = () -> (0.1 * -m_Logitech_F310.getRawAxis(1)); //Java Lambda Expression; In a Logitech F310 pushing forward yields a negative value
