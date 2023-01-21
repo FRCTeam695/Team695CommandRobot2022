@@ -96,15 +96,17 @@ public class RobotContainer {
 
     LeftStickButtons[8].onTrue(new EnableBrakeMode(m_drivetrain));
     LeftStickButtons[7].onTrue(new EnableCoastMode(m_drivetrain));
-    
-    
 
 
+
+
+    /*
     m_chooser.setDefaultOption("middleBottomCargoScore", middleBottomCargoScore());
     m_chooser.addOption("middleCargoAndScore", middleCargoAndScore());
     m_chooser.addOption("bottomCargoAndScore", bottomCargoAndScore());
     m_chooser.addOption("topCargoAndScore", topCargoAndScore());
     m_chooser.addOption("scoreAndMoveOutOfTarmac", scoreAndMoveOutOfTarmac());
+    */
 
 
     m_secChooser.setDefaultOption("0", 0.0);
@@ -160,6 +162,7 @@ public class RobotContainer {
     .andThen(selected); 
     }
 
+  /* 
   public Command middleBottomCargoScore(){
     return new InstantCommand(()-> {m_drivetrain.resetOdometry(HubToMiddleLeftBlueCargoTrajectory.getInitialPose());}, m_drivetrain)
     .andThen
@@ -309,6 +312,7 @@ public class RobotContainer {
     .andThen(generateRamseteCommand(SimpleCurve2TestTrajectory))
     .andThen(generateRamseteCommand(SimpleCurve2BackTestTrajectory));
   }
+  */
 
   private Command generateRamseteCommand(Trajectory traj) {
     RamseteController standardRamseteController = new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta);
