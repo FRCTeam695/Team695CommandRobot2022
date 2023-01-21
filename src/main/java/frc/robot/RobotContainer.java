@@ -90,38 +90,15 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
-    m_drivetrain.setDefaultCommand(m_Extreme_3D_Pro_CurvatureDrive);
-    m_IntakeSubsystem.setDefaultCommand(new RunCommand(()-> {m_IntakeSubsystem.setIntakeSpeed(0);}, m_IntakeSubsystem).withName("defaultStop"));
-    m_IntakeLiftSubsystem.setDefaultCommand(new IntakeLiftStop(m_IntakeLiftSubsystem));
-    m_ClimberSubsystem.setDefaultCommand(new RunCommand(()-> {m_ClimberSubsystem.turnClimberOff();}, m_ClimberSubsystem));
-
 
     LeftStickButtons[2].onTrue(new TurnRelativeToHeading(m_drivetrain, 45).withTimeout(1));
     RightStickButtons[2].onTrue(new TurnRelativeToHeading(m_drivetrain, -45).withTimeout(1));
 
-    RightStickButtons[1].whileTrue(m_IntakeInward);
-    RightStickButtons[4].whileTrue(m_IntakeOutward);
-
-    LeftStickButtons[9].whileTrue(new RunCommand(()->{m_IntakeLiftSubsystem.setArmPercent(-0.15);}, m_IntakeLiftSubsystem));
-    LeftStickButtons[10].whileTrue(new RunCommand(()->{m_IntakeLiftSubsystem.setArmPercent(0.15);}, m_IntakeLiftSubsystem));
-    
-    LeftStickButtons[11].onTrue(new InstantCommand(()-> {m_IntakeLiftSubsystem.resetIntakeLiftPositionToDown();}, m_IntakeLiftSubsystem));
-    LeftStickButtons[12].onTrue(new InstantCommand(()-> {m_IntakeLiftSubsystem.resetIntakeLiftPositionToUp();}, m_IntakeLiftSubsystem));
-    
-    LeftStickButtons[3].onTrue(new RaiseIntakeToTop(m_IntakeLiftSubsystem, IntakeLiftConstants.kFastIntakeRaise));
-    LeftStickButtons[4].onTrue(new LowerIntakeToBottom(m_IntakeLiftSubsystem));
-
     LeftStickButtons[8].onTrue(new EnableBrakeMode(m_drivetrain));
     LeftStickButtons[7].onTrue(new EnableCoastMode(m_drivetrain));
     
-    RightStickButtons[8].whileTrue(new ActuateClimberOne(m_ClimberSubsystem, m_IntakeLiftSubsystem, -0.25));
-    RightStickButtons[7].whileTrue(new ActuateClimberOne(m_ClimberSubsystem, m_IntakeLiftSubsystem, 0.25));
     
-    RightStickButtons[10].whileTrue(new ActuateClimberTwo(m_ClimberSubsystem, m_IntakeLiftSubsystem, -0.25));
-    RightStickButtons[9].whileTrue(new ActuateClimberTwo(m_ClimberSubsystem, m_IntakeLiftSubsystem, 0.25));
 
-    LeftStickButtons[1].whileTrue(new ActuateBothClimbers(m_ClimberSubsystem, m_IntakeLiftSubsystem, -1));
-    RightStickButtons[11].whileTrue(new ActuateBothClimbers(m_ClimberSubsystem, m_IntakeLiftSubsystem, 1));
 
     m_chooser.setDefaultOption("middleBottomCargoScore", middleBottomCargoScore());
     m_chooser.addOption("middleCargoAndScore", middleCargoAndScore());
