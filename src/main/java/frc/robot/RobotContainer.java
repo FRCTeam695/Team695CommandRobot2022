@@ -91,19 +91,6 @@ public class RobotContainer {
   private Trajectory SimpleCurve2TestTrajectory = importTrajectory("paths/output/SimpleCurve2.wpilib.json");
   private Trajectory SimpleCurve2BackTestTrajectory = importTrajectory("paths/output/SimpleCurve2Back.wpilib.json");
 
-
-  private final Command m_IntakeInward = new RunCommand(
-     () -> {
-        m_IntakeSubsystem.setIntakeSpeed(1);
-     },
-  m_IntakeSubsystem);
-
-  private final Command m_IntakeOutward = new RunCommand(
-     () -> {
-        m_IntakeSubsystem.setIntakeSpeed(-1);
-     },
-  m_IntakeSubsystem);
-
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   SendableChooser<Double> m_secChooser = new SendableChooser<>();
     
